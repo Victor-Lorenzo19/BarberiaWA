@@ -1,0 +1,348 @@
+/* ============================================================
+   NAVMENU — BarberiaWA (Fase 2 corregida)
+   Sidebar náutico con acentos dorados y off-canvas para móvil
+   ============================================================ */
+
+/* --- Barra superior en móvil --- */
+.bb-mobile-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 var(--space-md);
+    background-color: var(--color-primary-container);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.bb-hamburger-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 222, 165, 0.25);
+    color: var(--color-secondary-fixed);
+    border-radius: var(--radius-md);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.bb-hamburger-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-secondary-fixed);
+}
+
+.bb-hamburger-btn .material-symbols-outlined {
+    font-size: 1.5rem;
+}
+
+/* --- Telón de fondo (Backdrop) para móvil --- */
+.bb-mobile-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1040;
+}
+
+/* --- Sidebar principal --- */
+.bb-sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--color-primary-container);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    overflow-y: auto;
+}
+
+/* --- Encabezado de marca (Brand) --- */
+.bb-sidebar-header {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bb-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.bb-brand-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    background-color: var(--color-tertiary-container);
+    border: 1px solid rgba(255, 222, 165, 0.25);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bb-brand-icon .material-symbols-outlined {
+    font-size: 1.5rem;
+    color: var(--color-secondary-fixed);
+}
+
+.bb-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.bb-brand-name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-on-primary);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.bb-brand-sub {
+    font-size: var(--text-label-sm);
+    color: var(--color-on-primary-container);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+/* --- Badge de estado: Salón Operativo --- */
+.bb-salon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
+    background-color: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(233, 193, 118, 0.25);
+    border-radius: var(--radius-full);
+    width: fit-content;
+}
+
+.bb-status-pulse {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--color-secondary-fixed-dim);
+    border-radius: var(--radius-full);
+    box-shadow: 0 0 8px var(--color-secondary-fixed-dim);
+    animation: bbPulse 2s infinite ease-in-out;
+}
+
+.bb-salon-text {
+    font-size: var(--text-label-sm);
+    font-weight: 700;
+    color: var(--color-secondary-fixed);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+@keyframes bbPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.35;
+        transform: scale(0.85);
+    }
+}
+
+/* --- Menú de enlaces y agrupaciones --- */
+.bb-nav-menu {
+    padding: var(--space-md) var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    flex: 1;
+}
+
+.bb-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bb-nav-group-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-md);
+    margin-bottom: 2px;
+}
+
+.bb-group-icon {
+    font-size: 1rem;
+    color: var(--color-secondary-fixed);
+    opacity: 0.85;
+}
+
+.bb-nav-section-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-on-primary-container);
+    opacity: 0.85;
+}
+
+.bb-group-tag {
+    margin-left: auto;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    background-color: rgba(233, 193, 118, 0.15);
+    color: var(--color-secondary-fixed);
+    border: 1px solid rgba(233, 193, 118, 0.3);
+}
+
+/* Grupo de Gestión del Salón (bloque visualmente diferenciado para staff) */
+.bb-nav-group-staff {
+    background-color: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xs) 4px;
+    margin-top: 2px;
+}
+
+.bb-nav-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.08);
+    margin: var(--space-xs) var(--space-md);
+}
+
+.bb-nav-tag {
+    margin-left: auto;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-full);
+    background-color: rgba(254, 212, 136, 0.15);
+    color: var(--color-secondary-fixed);
+    border: 1px solid rgba(254, 212, 136, 0.3);
+}
+
+.bb-nav-item,
+::deep a.bb-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 0.75rem var(--space-md);
+    border-radius: var(--radius-lg);
+    color: var(--color-on-primary-container) !important;
+    text-decoration: none !important;
+    font-size: var(--text-label-lg);
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.bb-nav-item:hover,
+::deep a.bb-nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--color-on-primary) !important;
+    text-decoration: none !important;
+    transform: translateX(2px);
+}
+
+.bb-nav-icon {
+    font-size: 1.35rem;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.bb-nav-label {
+    font-size: 0.95rem;
+    color: inherit;
+    text-decoration: none !important;
+}
+
+/* Resaltado del enlace activo */
+.bb-nav-item.active,
+::deep a.bb-nav-item.active {
+    background-color: var(--color-tertiary-container);
+    color: var(--color-secondary-fixed) !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    border-left: 3px solid var(--color-secondary-fixed-dim);
+}
+
+.bb-nav-item.active:hover,
+::deep a.bb-nav-item.active:hover {
+    color: var(--color-secondary-fixed) !important;
+    text-decoration: none !important;
+}
+
+.bb-nav-item.active .bb-nav-icon,
+::deep a.bb-nav-item.active .bb-nav-icon {
+    color: var(--color-secondary-fixed) !important;
+}
+
+/* ============================================================
+   RESPONSIVE: Móvil vs Escritorio
+   ============================================================ */
+
+@media (max-width: 991px) {
+    /* Barra móvil fija visible */
+    .bb-mobile-bar {
+        display: flex;
+    }
+
+    /* Backdrop activo si el menú está abierto */
+    .bb-mobile-backdrop {
+        display: block;
+    }
+
+    /* Sidebar como off-canvas deslizable */
+    .bb-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: -288px;
+        z-index: 1050;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .bb-sidebar.bb-sidebar-open {
+        left: 0;
+    }
+}
+
+@media (min-width: 992px) {
+    .bb-mobile-bar {
+        display: none !important;
+    }
+
+    .bb-mobile-backdrop {
+        display: none !important;
+    }
+
+    .bb-sidebar {
+        position: sticky;
+        top: 0;
+        left: 0 !important;
+        display: flex !important;
+    }
+}

@@ -1,0 +1,569 @@
+/* ============================================================
+   HOME — BarberiaWA (Fase 3)
+   Página de inicio inspirada en el diseño Stitch
+   ============================================================ */
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    width: 100%;
+}
+
+/* ============================================================
+   HERO COMMAND BANNER
+   ============================================================ */
+
+.hero-banner {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    box-shadow: 0 4px 20px rgba(19, 27, 46, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    border: 1px solid rgba(255, 222, 165, 0.15);
+}
+
+.hero-glow {
+    position: absolute;
+    right: -4rem;
+    top: -4rem;
+    width: 22rem;
+    height: 22rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(233, 193, 118, 0.16) 0%, rgba(19, 27, 46, 0) 70%);
+    pointer-events: none;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.hero-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 3px 12px;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 222, 165, 0.2);
+}
+
+.hero-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-secondary-fixed);
+    box-shadow: 0 0 8px var(--color-secondary-fixed);
+    animation: heroPulse 2s infinite ease-in-out;
+}
+
+@keyframes heroPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+}
+
+.hero-status-label {
+    font-size: var(--text-label-sm);
+    font-weight: 700;
+    color: var(--color-secondary-fixed);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.hero-date {
+    font-size: var(--text-label-sm);
+    color: var(--color-on-primary-container);
+    text-transform: capitalize;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3.5vw, 36px);
+    font-weight: 700;
+    color: var(--color-on-primary);
+    margin: var(--space-xs) 0 0 0;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.hero-description {
+    font-size: var(--text-body-lg);
+    color: var(--color-on-primary-container);
+    max-width: 680px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.hero-actions {
+    position: relative;
+    z-index: 2;
+    align-self: flex-start;
+}
+
+.hero-btn-primary,
+.hero-btn-primary:visited {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background-color: var(--color-secondary-fixed);
+    color: var(--color-on-secondary-fixed) !important;
+    padding: 0.75rem 1.4rem;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-label-lg);
+    font-weight: 700;
+    text-decoration: none !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-btn-primary:hover,
+.hero-btn-primary:focus {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    color: var(--color-on-secondary-fixed) !important;
+    text-decoration: none !important;
+}
+
+.hero-btn-primary .material-symbols-outlined {
+    font-size: 1.25rem;
+}
+
+/* ============================================================
+   SECCIÓN DE ACCIONES RÁPIDAS
+   ============================================================ */
+
+.section-card {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-surface-container-highest);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+/* Diferenciación visual: Sección Cliente */
+.section-cliente {
+    border: 1px solid rgba(178, 137, 0, 0.22);
+    box-shadow: 0 4px 18px rgba(178, 137, 0, 0.05);
+}
+
+/* Diferenciación visual: Sección Staff / Operativa */
+.section-staff {
+    background-color: var(--color-surface-container-low);
+    border: 1px solid var(--color-surface-container-high);
+    border-left: 4px solid var(--color-primary);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--color-surface-container-high);
+}
+
+.section-header-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.section-header-icon {
+    font-size: 1.75rem;
+}
+
+.client-icon {
+    color: var(--color-secondary);
+}
+
+.staff-icon {
+    color: var(--color-primary);
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-headline-sm);
+    font-weight: 700;
+    color: var(--color-on-surface);
+    margin: 0;
+}
+
+.section-subtitle {
+    font-size: var(--text-body-sm);
+    color: var(--color-on-surface-variant);
+    margin: 2px 0 0 0;
+}
+
+.section-tag {
+    font-size: var(--text-label-sm);
+    font-weight: 700;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background-color: var(--color-surface-container-low);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+}
+
+.client-tag {
+    background-color: rgba(178, 137, 0, 0.12);
+    color: var(--color-secondary);
+    border: 1px solid rgba(178, 137, 0, 0.25);
+}
+
+.staff-tag {
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary-fixed);
+    border: 1px solid rgba(255, 222, 165, 0.25);
+    padding: 4px 12px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+}
+
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-md);
+}
+
+.action-card,
+.action-card:visited {
+    background-color: var(--color-surface-container-low);
+    border: 1px solid var(--color-surface-container-high);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    text-decoration: none !important;
+    color: inherit !important;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Tarjeta destacada de Reservar Turno */
+.action-card-featured {
+    background: linear-gradient(135deg, var(--color-surface-container-lowest) 0%, rgba(233, 193, 118, 0.1) 100%);
+    border: 1.5px solid rgba(178, 137, 0, 0.35);
+    box-shadow: 0 4px 16px rgba(119, 90, 25, 0.08);
+    padding: var(--space-lg);
+}
+
+.action-card-featured:hover {
+    border-color: var(--color-secondary);
+    box-shadow: 0 8px 24px rgba(119, 90, 25, 0.18);
+}
+
+.action-icon-featured {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%);
+    box-shadow: 0 4px 12px rgba(19, 27, 46, 0.2);
+}
+
+.action-title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.action-badge-gold {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background-color: rgba(178, 137, 0, 0.15);
+    color: var(--color-secondary);
+    border: 1px solid rgba(178, 137, 0, 0.3);
+}
+
+.action-cta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    color: var(--color-secondary);
+    font-weight: 600;
+    font-size: var(--text-label-md);
+}
+
+.action-cta-label {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .action-cta-label {
+        display: inline;
+    }
+}
+
+/* Tarjetas operativas del Staff */
+.staff-action-card {
+    background-color: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-surface-container-highest);
+}
+
+.staff-action-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 6px 18px rgba(19, 27, 46, 0.1);
+}
+
+.staff-icon-box {
+    background-color: var(--color-primary);
+    color: var(--color-secondary-fixed);
+}
+
+.action-card:hover,
+.action-card:focus {
+    background-color: var(--color-surface-container-lowest);
+    border-color: var(--color-secondary);
+    color: inherit !important;
+    text-decoration: none !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px -4px rgba(119, 90, 25, 0.15);
+}
+
+.action-icon-box {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary-fixed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.action-card:hover .action-icon-box {
+    transform: scale(1.05);
+}
+
+.action-icon-box .material-symbols-outlined {
+    font-size: 1.5rem;
+}
+
+.action-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.action-title {
+    font-size: var(--text-label-lg);
+    font-weight: 700;
+    color: var(--color-on-surface);
+    text-decoration: none !important;
+    transition: color 0.2s ease;
+}
+
+.action-card:hover .action-title {
+    color: var(--color-secondary);
+    text-decoration: none !important;
+}
+
+.action-description {
+    font-size: var(--text-body-sm);
+    color: var(--color-on-surface-variant);
+    text-decoration: none !important;
+    margin-top: 3px;
+    line-height: 1.35;
+}
+
+.action-arrow {
+    color: var(--color-outline);
+    font-size: 1.25rem;
+    text-decoration: none !important;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.action-card:hover .action-arrow {
+    transform: translateX(4px);
+    color: var(--color-secondary);
+    text-decoration: none !important;
+}
+
+/* ============================================================
+   SECCIÓN INFORMATIVA / FILOSOFÍA
+   ============================================================ */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+}
+
+.info-card {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-surface-container-highest);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+/* Card de Cita Editorial */
+.quote-card {
+    position: relative;
+    padding: var(--space-xl);
+    display: flex;
+    align-items: center;
+}
+
+.quote-stripe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: var(--color-secondary);
+}
+
+.quote-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding-left: var(--space-xs);
+}
+
+.quote-text {
+    font-family: var(--font-display);
+    font-size: clamp(16px, 2vw, 19px);
+    font-style: italic;
+    color: var(--color-on-surface);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.quote-author {
+    font-size: var(--text-label-sm);
+    font-weight: 700;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: var(--space-xs);
+}
+
+/* Card de Horarios & Atención */
+.details-card {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.details-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.details-header-icon {
+    font-size: 1.5rem;
+    color: var(--color-secondary);
+}
+
+.details-title {
+    font-family: var(--font-display);
+    font-size: var(--text-headline-sm);
+    font-weight: 700;
+    color: var(--color-on-surface);
+    margin: 0;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-surface-container-high);
+}
+
+.info-row-icon {
+    font-size: 1.35rem;
+    color: var(--color-secondary);
+    flex-shrink: 0;
+}
+
+.info-row-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: var(--text-label-sm);
+    color: var(--color-on-surface-variant);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.info-val {
+    font-size: var(--text-body-md);
+    font-weight: 600;
+    color: var(--color-on-surface);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (min-width: 992px) {
+    .hero-banner {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .hero-actions {
+        align-self: center;
+        flex-shrink: 0;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}

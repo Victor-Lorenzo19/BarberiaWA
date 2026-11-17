@@ -1,0 +1,169 @@
+﻿@page "/"
+
+<PageTitle>Inicio - BarberiaWA</PageTitle>
+
+<div class="home-container">
+    <!-- Banner Principal Ejecutivo -->
+    <section class="hero-banner">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="hero-badge-row">
+                <span class="hero-status-pill">
+                    <span class="hero-pulse"></span>
+                    <span class="hero-status-label">Atelier Operativo</span>
+                </span>
+                <span class="hero-date">• @FechaActual</span>
+            </div>
+
+            <h1 class="hero-title">¡Bienvenido a BarberiaWA!</h1>
+            <p class="hero-description">
+                Gestión integral de turnos, agenda de salón, catálogo de servicios y seguimiento de clientes con excelencia ceremonial.
+            </p>
+        </div>
+
+        <div class="hero-actions">
+            <NavLink class="hero-btn-primary" href="reservar-turno">
+                <span class="material-symbols-outlined">add_circle</span>
+                <span>Reservar turno</span>
+            </NavLink>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 1: EXPERIENCIA DEL CLIENTE -->
+    <section class="section-card section-cliente">
+        <div class="section-header">
+            <div class="section-header-info">
+                <span class="material-symbols-outlined section-header-icon client-icon">person</span>
+                <div>
+                    <h2 class="section-title">Experiencia del Cliente</h2>
+                    <p class="section-subtitle">Agendá y configurá tu ritual de atención personalizada</p>
+                </div>
+            </div>
+            <span class="section-tag client-tag">Cliente</span>
+        </div>
+
+        <div class="actions-grid">
+            <NavLink class="action-card action-card-featured" href="reservar-turno">
+                <div class="action-icon-box action-icon-featured">
+                    <span class="material-symbols-outlined">calendar_add_on</span>
+                </div>
+                <div class="action-details">
+                    <div class="action-title-row">
+                        <span class="action-title">Reservar Turno de Autor</span>
+                        <span class="action-badge-gold">Acceso destacado</span>
+                    </div>
+                    <span class="action-description">Elegí tu servicio, fecha y horario disponible en sencillos pasos.</span>
+                </div>
+                <div class="action-cta">
+                    <span class="action-cta-label">Reservar</span>
+                    <span class="action-arrow material-symbols-outlined">arrow_forward</span>
+                </div>
+            </NavLink>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 2: GESTIÓN DEL SALÓN -->
+    <section class="section-card section-staff">
+        <div class="section-header staff-header">
+            <div class="section-header-info">
+                <span class="material-symbols-outlined section-header-icon staff-icon">storefront</span>
+                <div>
+                    <h2 class="section-title">Gestión del Salón</h2>
+                    <p class="section-subtitle">Herramientas operativas y administrativas para el staff</p>
+                </div>
+            </div>
+            <span class="section-tag staff-tag">Área Operativa • Staff</span>
+        </div>
+
+        <div class="actions-grid staff-grid">
+            <NavLink class="action-card staff-action-card" href="Turnos">
+                <div class="action-icon-box staff-icon-box">
+                    <span class="material-symbols-outlined">event_available</span>
+                </div>
+                <div class="action-details">
+                    <span class="action-title">Agenda del Salón</span>
+                    <span class="action-description">Consultá las reservas del día, marcá servicios concluidos y gestioná turnos.</span>
+                </div>
+                <span class="action-arrow material-symbols-outlined">arrow_forward</span>
+            </NavLink>
+
+            <NavLink class="action-card staff-action-card" href="historial-clientes">
+                <div class="action-icon-box staff-icon-box">
+                    <span class="material-symbols-outlined">badge</span>
+                </div>
+                <div class="action-details">
+                    <span class="action-title">Historial de Clientes</span>
+                    <span class="action-description">Revisá las visitas previas y servicios completados por cliente.</span>
+                </div>
+                <span class="action-arrow material-symbols-outlined">arrow_forward</span>
+            </NavLink>
+
+            <NavLink class="action-card staff-action-card" href="administrar-servicios">
+                <div class="action-icon-box staff-icon-box">
+                    <span class="material-symbols-outlined">price_change</span>
+                </div>
+                <div class="action-details">
+                    <span class="action-title">Administrar Servicios</span>
+                    <span class="action-description">Configurá el catálogo oficial, precios y tiempos de cada especialidad.</span>
+                </div>
+                <span class="action-arrow material-symbols-outlined">arrow_forward</span>
+            </NavLink>
+        </div>
+    </section>
+
+    <!-- Información Operativa & Filosofía -->
+    <section class="info-grid">
+        <!-- Tarjeta de Filosofía de Autor -->
+        <div class="info-card quote-card">
+            <div class="quote-stripe"></div>
+            <div class="quote-content">
+                <p class="quote-text">
+                    “El arte del afeitado clásico honrado con precisión contemporánea, toallas tibias y cortes a medida.”
+                </p>
+                <span class="quote-author">BarberiaWA • Protocolo de Excelencia</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Horarios y Atención Operativa Real -->
+        <div class="info-card details-card">
+            <div class="details-header">
+                <span class="material-symbols-outlined details-header-icon">store</span>
+                <h3 class="details-title">Horarios & Atención del Salón</h3>
+            </div>
+
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="material-symbols-outlined info-row-icon">schedule</span>
+                    <div class="info-row-content">
+                        <span class="info-label">Días y Horarios de Atención</span>
+                        <span class="info-val">Lunes a Sábado • 10:00 a 21:00 hs</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <span class="material-symbols-outlined info-row-icon">timelapse</span>
+                    <div class="info-row-content">
+                        <span class="info-label">Slots de Turnos</span>
+                        <span class="info-val">Horarios adaptados a la duración de cada servicio</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <span class="material-symbols-outlined info-row-icon">event_busy</span>
+                    <div class="info-row-content">
+                        <span class="info-label">Domingos y Feriados</span>
+                        <span class="info-val">Cerrado por descanso de salón</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    private readonly System.Globalization.CultureInfo culturaArgentina =
+        System.Globalization.CultureInfo.GetCultureInfo("es-AR");
+
+    private string FechaActual =>
+        DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", culturaArgentina);
+}

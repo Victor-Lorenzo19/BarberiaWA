@@ -1,0 +1,139 @@
+/* ============================================================
+   MAINLAYOUT — BarberiaWA (Fase 2 corregida)
+   Estructura flex horizontal en escritorio, fluida en móvil
+   ============================================================ */
+
+.bb-app-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-surface);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* --- Área principal a la derecha del sidebar --- */
+.bb-main-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-surface);
+}
+
+/* --- Header superior (Sticky) --- */
+.bb-top-header {
+    height: var(--header-height);
+    background-color: rgba(255, 248, 245, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-surface-container-highest);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-xl);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+.bb-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.bb-header-badge {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: -0.01em;
+}
+
+.bb-header-divider {
+    color: var(--color-outline-variant);
+    font-size: 0.9rem;
+}
+
+.bb-header-motto {
+    font-size: var(--text-label-sm);
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.bb-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.bb-header-date-pill {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background-color: var(--color-surface-container-low);
+    border: 1px solid var(--color-surface-container-high);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+    color: var(--color-on-surface-variant);
+    text-transform: capitalize;
+}
+
+.bb-date-icon {
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+}
+
+/* --- Contenedor de la página activa --- */
+.bb-page-container {
+    flex: 1;
+    padding: var(--space-xl);
+    max-width: 1600px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   RESPONSIVE: Móvil vs Escritorio
+   ============================================================ */
+
+@media (max-width: 991px) {
+    .bb-app-layout {
+        flex-direction: column;
+    }
+
+    .bb-main-content {
+        margin-top: 60px; /* Despeja la barra móvil fija de NavMenu */
+        width: 100%;
+    }
+
+    .bb-top-header {
+        padding: 0 var(--space-md);
+        height: 52px;
+        top: 60px; /* No quede oculto detrás de la barra móvil fija al hacer scroll */
+    }
+
+    .bb-header-motto,
+    .bb-header-divider {
+        display: none;
+    }
+
+    .bb-header-date-pill {
+        padding: 4px 8px;
+        font-size: var(--text-label-sm);
+    }
+
+    .bb-page-container {
+        padding: var(--space-md);
+    }
+}
+
+@media (min-width: 992px) {
+    .bb-app-layout {
+        flex-direction: row;
+    }
+}

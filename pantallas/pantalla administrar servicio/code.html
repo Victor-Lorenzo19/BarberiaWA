@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface":"#fff8f5","on-secondary-fixed":"#261900","primary":"#000000","outline-variant":"#c6c6cd","on-primary-fixed-variant":"#3f465c","primary-fixed":"#dae2fd","on-tertiary-container":"#b97434","primary-container":"#131b2e","error-container":"#ffdad6","surface-tint":"#565e74","on-secondary-fixed-variant":"#5d4201","on-error":"#ffffff","secondary":"#775a19","background":"#fff8f5","on-tertiary-fixed":"#2e1500","outline":"#76777d","inverse-on-surface":"#f7efeb","tertiary-fixed":"#ffdcc2","tertiary":"#000000","on-primary-fixed":"#131b2e","surface-container-highest":"#e9e1dd","tertiary-container":"#2e1500","error":"#ba1a1a","on-error-container":"#93000a","on-primary":"#ffffff","surface-dim":"#e0d8d5","secondary-fixed":"#ffdea5","on-surface-variant":"#45464d","on-secondary-container":"#785a1a","on-secondary":"#ffffff","secondary-container":"#fed488","inverse-surface":"#33302d","surface-container-lowest":"#ffffff","on-primary-container":"#7c839b","surface-variant":"#e9e1dd","primary-fixed-dim":"#bec6e0","surface-container-high":"#eee7e3","on-tertiary-fixed-variant":"#6d3a00","on-surface":"#1e1b19","surface-container-low":"#faf2ee","secondary-fixed-dim":"#e9c176","on-background":"#1e1b19","surface-bright":"#fff8f5","on-tertiary":"#ffffff","inverse-primary":"#bec6e0","tertiary-fixed-dim":"#ffb77b","surface-container":"#f4ece8"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xl":"2.5rem","margin-tablet":"1.75rem","space-md":"1rem","gutter-mobile":"1rem","gutter":"1.5rem","margin-mobile":"1rem","margin":"2.5rem","space-xs":"0.25rem","space-sm":"0.5rem","space-lg":"1.5rem"},"fontFamily":{"headline-sm":["Plus Jakarta Sans"],"display-lg-mobile":["Playfair Display"],"label-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"display-lg":["Playfair Display"],"headline-md":["Playfair Display"],"headline-lg":["Playfair Display"],"body-sm":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Playfair Display"],"body-lg":["Plus Jakarta Sans"]},"fontSize":{"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg-mobile":["34px",{"lineHeight":"42px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-primary-container z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="p-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-tertiary-container flex items-center justify-center"><span class="material-symbols-outlined text-secondary-fixed text-[24px]">content_cut</span></div><div><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight block">BarberiaWA</span><span class="font-label-sm text-label-sm text-on-primary-container tracking-wider uppercase block">Atelier &amp; Grooming</span></div></div></div><div class="px-space-lg mb-space-md"><div class="flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-primary"><span class="w-2 h-2 rounded-full bg-secondary-fixed-dim animate-pulse"></span><span class="font-label-sm text-label-sm text-secondary-fixed tracking-wide uppercase">Salón Operativo</span></div></div><nav class="px-space-md flex flex-col gap-space-xs" data-active-classes="bg-tertiary-container text-secondary-fixed font-label-lg rounded-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="inicio" href="#"><span class="material-symbols-outlined text-[20px]">home</span><span>Inicio</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="reservar-turno" href="#"><span class="material-symbols-outlined text-[20px]">edit_calendar</span><span>Reservar Turno</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="turnos-reservados" href="#"><span class="material-symbols-outlined text-[20px]">event_available</span><span>Turnos Reservados</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="historial-clientes" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span>Historial Clientes</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm transition-colors bg-tertiary-container text-secondary-fixed font-label-lg rounded-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]" data-path="administrar-servicios" href="#"><span class="material-symbols-outlined text-[20px]">spa</span><span>Administrar Servicios</span></a></nav></div><div class="p-space-md"><div class="p-space-sm rounded-xl bg-primary flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center"><span class="material-symbols-outlined text-on-secondary-fixed text-[18px]">person</span></div><div class="flex flex-col"><span class="font-label-lg text-label-lg text-on-primary leading-tight">Enzo Romano</span><span class="font-body-sm text-body-sm text-on-primary-container">Maestro Barbero</span></div></div><button aria-label="Opciones de barbero" class="p-space-xs text-on-primary-container hover:text-on-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40"><div class="h-16 w-full px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-lg flex-1"><div class="relative w-72"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full pl-9 pr-space-md py-space-xs rounded-xl bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Buscar turno, cliente o servicio..." type="text"/></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-secondary text-[16px]">store</span><span class="font-label-sm text-label-sm text-on-surface">Sede Central • Recoleta</span><span class="material-symbols-outlined text-outline text-[16px]">expand_more</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-outline text-[16px]">today</span><span class="font-label-sm text-label-sm text-on-surface">Viernes, 24 Mayo</span></div><button aria-label="Notificaciones" class="relative p-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<div class="p-space-lg max-w-[1560px] mx-auto w-full flex flex-col gap-space-lg">
+<!-- Top Action Bar & Page Title -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">Maestro Tarifario • Ciclo 2024 / Q2</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Catálogo de Servicios &amp; Tarifas</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+          Menú oficial de atención en sillón. Los ajustes impactan la disponibilidad de slots, tiempos de limpieza y checkout automático.
+        </p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="px-space-md py-space-sm rounded-xl bg-surface-container-low text-on-surface font-label-lg text-label-lg flex items-center gap-space-xs shadow-sm hover:bg-surface-container transition-all" id="btn-export-tariff">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Exportar PDF</span>
+</button>
+<button class="px-space-md py-space-sm rounded-xl bg-secondary-fixed text-on-secondary-fixed font-label-lg text-label-lg flex items-center gap-space-xs shadow-sm hover:bg-secondary-container transition-all transform active:scale-95" id="open-service-modal">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span>+ Nuevo Servicio</span>
+</button>
+</div>
+</div>
+<!-- Overview Metric Row: Asymmetric Luxury Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-md">
+<!-- Metric 1: Activos -->
+<div class="lg:col-span-3 bg-surface-container-lowest rounded-xl p-space-md flex flex-col justify-between shadow-sm relative overflow-hidden group">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Carta Vigente</span>
+<span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+</span>
+</div>
+<div class="mt-space-md flex items-baseline gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold">8</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">servicios activos</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[14px]">check_circle</span>
+<span class="font-label-sm text-label-sm text-secondary">100% validados para turno online</span>
+</div>
+</div>
+<!-- Metric 2: Tiempo Promedio -->
+<div class="lg:col-span-3 bg-surface-container-lowest rounded-xl p-space-md flex flex-col justify-between shadow-sm relative overflow-hidden group">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Ritmo de Sillón</span>
+<span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+</span>
+</div>
+<div class="mt-space-md flex items-baseline gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold">42</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">min / servicio prom.</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span>Buffer higiénico: +10 min</span>
+</div>
+</div>
+<!-- Metric 3: Best Seller -->
+<div class="lg:col-span-3 bg-surface-container-lowest rounded-xl p-space-md flex flex-col justify-between shadow-sm relative overflow-hidden group">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Top Rendimiento</span>
+<span class="w-8 h-8 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">hotel_class</span>
+</span>
+</div>
+<div class="mt-space-md">
+<div class="font-headline-sm text-headline-sm text-on-surface truncate">Combo Signature</div>
+<span class="font-body-sm text-body-sm text-secondary font-medium">38% de facturación total</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span>Ticket: $18.500 ARS</span>
+</div>
+</div>
+<!-- Metric 4: WhatsApp Webhook Live Banner -->
+<div class="lg:col-span-3 bg-primary-container rounded-xl p-space-md flex flex-col justify-between shadow-sm text-on-primary relative overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-secondary-fixed tracking-wider uppercase">Live Webhook</span>
+</div>
+<span class="material-symbols-outlined text-on-primary-container text-[18px]">cloud_sync</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-space-sm leading-relaxed">
+          Cualquier ajuste de precios o pausas se reflejará al instante en WhatsApp Webhook y agenda online.
+        </p>
+<div class="mt-space-xs pt-space-xs flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-fixed">API Latencia: 48ms</span>
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]">bolt</span>
+</div>
+</div>
+</div>
+<!-- Category Filters and Search Control Toolbar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md bg-surface-container-lowest p-space-sm rounded-xl shadow-sm">
+<!-- Category Navigation Tabs -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar" id="category-tabs">
+<button class="cat-pill active px-space-md py-space-xs rounded-lg font-label-lg text-label-lg bg-primary text-on-primary transition-all whitespace-nowrap" data-cat="all">
+          Todos (8)
+        </button>
+<button class="cat-pill px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container transition-all whitespace-nowrap" data-cat="cabello">
+          Cabello
+        </button>
+<button class="cat-pill px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container transition-all whitespace-nowrap" data-cat="barba">
+          Barba &amp; Spa
+        </button>
+<button class="cat-pill px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container transition-all whitespace-nowrap" data-cat="combos">
+          Combos
+        </button>
+<button class="cat-pill px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container transition-all whitespace-nowrap" data-cat="tratamientos">
+          Tratamientos
+        </button>
+<button class="cat-pill px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container transition-all whitespace-nowrap" data-cat="express">
+          Express
+        </button>
+</div>
+<!-- Quick Search & Layout View switch -->
+<div class="flex items-center gap-space-sm shrink-0 px-space-xs">
+<div class="relative w-56">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[16px]">filter_list</span>
+<input class="w-full pl-8 pr-space-sm py-1.5 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors" id="service-search-input" placeholder="Filtrar por nombre..." type="text"/>
+</div>
+<div class="w-px h-6 bg-surface-container"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Moneda: ARS ($)</span>
+</div>
+</div>
+<!-- Main Service Cards Grid (Desktop Bespoke Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md items-stretch" id="service-catalog-grid">
+<!-- Card 1: Corte Clásico WA -->
+<div class="service-item bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md relative overflow-hidden group" data-category="cabello">
+<div class="flex flex-col gap-space-sm">
+<!-- Top Row: Category Pill & Switch -->
+<div class="flex items-center justify-between">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+              Cabello
+            </span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant status-label">Activo</span>
+<button aria-label="Alternar disponibilidad" class="toggle-btn w-9 h-5 rounded-full bg-primary relative transition-colors focus:outline-none" data-active="true">
+<span class="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-on-primary transition-transform"></span>
+</button>
+</div>
+</div>
+<!-- Header & Price -->
+<div class="flex items-start justify-between gap-space-sm mt-1">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Corte Clásico WA
+              </h3>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span>Duración: 40 min</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">$12.000</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">ARS</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed line-clamp-3 mt-space-xs">
+            Lavado inicial, asesoría visagista, corte tradicional a tijera o máquina de precisión y peinado con pomada artesanal.
+          </p>
+<!-- Visual Tag Micro-pill -->
+<div class="flex items-center gap-2 mt-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container-low px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[12px]">brush</span> Acabado Matte
+            </span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded">
+              Incluye lavado
+            </span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-space-md mt-space-md flex items-center justify-between bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ID: WA-SRV-001</span>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[15px]">edit</span> Editar
+            </button>
+<button class="p-1.5 rounded-lg bg-error-container hover:bg-red-200 text-on-error-container transition-colors" title="Eliminar servicio">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Afeitado Tradicional Spa -->
+<div class="service-item bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md relative overflow-hidden group" data-category="barba">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+              Barba &amp; Spa
+            </span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant status-label">Activo</span>
+<button aria-label="Alternar disponibilidad" class="toggle-btn w-9 h-5 rounded-full bg-primary relative transition-colors focus:outline-none" data-active="true">
+<span class="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-on-primary transition-transform"></span>
+</button>
+</div>
+</div>
+<div class="flex items-start justify-between gap-space-sm mt-1">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Afeitado Tradicional Spa
+              </h3>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span>Duración: 35 min</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">$9.500</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">ARS</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed line-clamp-3 mt-space-xs">
+            Protocolo imperial de 3 toallas calientes con eucalipto, enjabonado con brocha de tejón, navaja japonesa y bálsamo frío.
+          </p>
+<div class="flex items-center gap-2 mt-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container-low px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[12px]">spa</span> Navaja Japonesa
+            </span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded">
+              Toalla caliente
+            </span>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ID: WA-SRV-002</span>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[15px]">edit</span> Editar
+            </button>
+<button class="p-1.5 rounded-lg bg-error-container hover:bg-red-200 text-on-error-container transition-colors" title="Eliminar servicio">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Combo Premium Signature (POPULAR FEATURED) -->
+<div class="service-item bg-surface-container-lowest rounded-xl p-space-md shadow-md flex flex-col justify-between transition-all hover:shadow-xl relative overflow-hidden group" data-category="combos">
+<!-- Golden Top Indicator Strip -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary"></div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+                Combos
+              </span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span> Más Popular
+              </span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant status-label">Activo</span>
+<button aria-label="Alternar disponibilidad" class="toggle-btn w-9 h-5 rounded-full bg-primary relative transition-colors focus:outline-none" data-active="true">
+<span class="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-on-primary transition-transform"></span>
+</button>
+</div>
+</div>
+<div class="flex items-start justify-between gap-space-sm mt-1">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Combo Premium Signature
+              </h3>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span class="font-medium text-on-surface">Duración: 60 min</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-headline-sm text-headline-sm text-secondary font-bold tracking-tight">$18.500</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">ARS</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed line-clamp-3 mt-space-xs">
+            Nuestra experiencia insignia definitiva: corte de autor, ritual de toalla caliente, perfilado milimétrico y degustación en lounge.
+          </p>
+<div class="flex items-center gap-2 mt-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary-fixed-variant bg-secondary-fixed/30 px-2 py-0.5 rounded font-medium">
+<span class="material-symbols-outlined text-[12px]">wine_bar</span> Lounge Drink
+            </span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary-fixed-variant bg-secondary-fixed/30 px-2 py-0.5 rounded font-medium">
+              Pack Completo
+            </span>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-secondary font-semibold">ID: WA-SRV-003</span>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[15px]">edit</span> Editar
+            </button>
+<button class="p-1.5 rounded-lg bg-error-container hover:bg-red-200 text-on-error-container transition-colors" title="Eliminar servicio">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4: Coloración & Camuflaje -->
+<div class="service-item bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md relative overflow-hidden group" data-category="tratamientos">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+              Tratamientos
+            </span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant status-label">Activo</span>
+<button aria-label="Alternar disponibilidad" class="toggle-btn w-9 h-5 rounded-full bg-primary relative transition-colors focus:outline-none" data-active="true">
+<span class="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-on-primary transition-transform"></span>
+</button>
+</div>
+</div>
+<div class="flex items-start justify-between gap-space-sm mt-1">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Coloración &amp; Camuflaje
+              </h3>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span>Duración: 50 min</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">$14.000</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">ARS</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed line-clamp-3 mt-space-xs">
+            Tinte matizador semi-permanente con acabado ultra natural sin efecto rojizo para barba o cabello, incluye lavado desintoxicante.
+          </p>
+<div class="flex items-center gap-2 mt-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container-low px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[12px]">palette</span> Efecto Ceniza
+            </span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded">
+              Semi-permanente
+            </span>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ID: WA-SRV-004</span>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[15px]">edit</span> Editar
+            </button>
+<button class="p-1.5 rounded-lg bg-error-container hover:bg-red-200 text-on-error-container transition-colors" title="Eliminar servicio">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 5: Perfilado Cejas & Barba -->
+<div class="service-item bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md relative overflow-hidden group" data-category="express">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+              Express
+            </span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant status-label">Activo</span>
+<button aria-label="Alternar disponibilidad" class="toggle-btn w-9 h-5 rounded-full bg-primary relative transition-colors focus:outline-none" data-active="true">
+<span class="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-on-primary transition-transform"></span>
+</button>
+</div>
+</div>
+<div class="flex items-start justify-between gap-space-sm mt-1">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Perfilado Cejas &amp; Barba
+              </h3>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span>Duración: 20 min</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">$6.500</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">ARS</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed line-clamp-3 mt-space-xs">
+            Limpieza de contornos a navaja rápida, remoción de exceso en entrecejo y alineación de pómulos para retoques entre turnos.
+          </p>
+<div class="flex items-center gap-2 mt-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container-low px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[12px]">flash_on</span> Turno Rápido
+            </span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded">
+              Alineación express
+            </span>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ID: WA-SRV-005</span>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[15px]">edit</span> Editar
+            </button>
+<button class="p-1.5 rounded-lg bg-error-container hover:bg-red-200 text-on-error-container transition-colors" title="Eliminar servicio">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Add New Service Quick Card Placeholder -->
+<div class="rounded-xl p-space-md bg-surface-container-low hover:bg-surface-container flex flex-col items-center justify-center gap-space-sm cursor-pointer transition-all shadow-sm group min-h-[260px]" id="quick-add-service-card">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary group-hover:scale-110 group-hover:bg-secondary-fixed transition-all">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</div>
+<div class="text-center">
+<span class="font-headline-sm text-headline-sm text-on-surface block font-medium">Crear Nueva Prestación</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Definí precio, categoría y duración de turno</span>
+</div>
+<span class="px-space-md py-1.5 rounded-lg bg-surface-container-lowest font-label-sm text-label-sm text-secondary uppercase tracking-wider group-hover:text-on-secondary-fixed transition-colors">
+          Configurar Ítem
+        </span>
+</div>
+</div>
+<!-- Editorial Atmosphere Showcase / Atelier Quality Guarantee -->
+<div class="mt-space-lg rounded-xl bg-surface-container-lowest p-space-lg shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-center">
+<div class="lg:col-span-7 flex flex-col gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">Protocolo de Cobro &amp; Tiempos</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Compromiso con el Oficio Barberil</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Cada servicio configurado en BarberiaWA incorpora automáticamente un margen de sanitización de herramientas con rayos UV y toallas de vapor grado hospitalario. Los precios listados son finales para el cliente sin recargos adicionales en salón.
+        </p>
+<div class="grid grid-cols-3 gap-space-md mt-space-sm">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">10 min</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sanitización entre turnos</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">100%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Productos certificados WA</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Instantáneo</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Recálculo de agenda</span>
+</div>
+</div>
+</div>
+<!-- Atelier Image Placeholder -->
+<div class="lg:col-span-5 h-56 rounded-xl overflow-hidden shadow-sm relative">
+<img class="w-full h-full object-cover" data-alt="Refined luxury barbershop interior featuring polished dark wood workstations, vintage leather barber chairs, brass trim details, ambient warm lighting, and neatly arranged straight razors with premium amber grooming bottles in an upscale atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBORxzjknAKiq0IK4Neo6bHSJoNqq1SlgdGQamNVjctxXUkII-KoF0BBHgxYHtVlDC6fHzlVWKAUi6jyUZ3KXuNKFcZ4WBMYuZ5GxQoNHCdvFp2bKrMX64HXNYmcwz86AgH3HjJLmfwZSq-Xltv9B3F5p6xSkNe4dHmhXQORmQljKAcwqkNfskJZHkDkJYDbEKtcx3ypgLmYC3BSgmB69-9YKjChTuqWs3Uo87X3780"/>
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-[1px]"></div>
+<div class="absolute bottom-space-sm left-space-sm right-space-sm p-space-xs rounded-lg bg-surface-container-lowest/90 backdrop-blur-md flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface">Sillón #01 • Master Station Recoleta</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">chair</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Slide-over / Modal for Adding/Editing Service -->
+<div class="fixed inset-0 bg-primary/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-space-md" id="service-modal-backdrop">
+<div class="bg-surface-container-lowest rounded-xl max-w-xl w-full p-space-lg shadow-xl relative animate-in fade-in duration-200">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Registrar Nuevo Servicio</h2>
+</div>
+<button class="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" id="close-service-modal">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<form class="mt-space-md flex flex-col gap-space-md" id="new-service-form">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase mb-1">Nombre del Servicio</label>
+<input class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="Ej: Ritual Barba Imperial &amp; Peeling" required="" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-space-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase mb-1">Categoría</label>
+<select class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm">
+<option value="cabello">Cabello</option>
+<option value="barba">Barba &amp; Spa</option>
+<option value="combos">Combos</option>
+<option value="tratamientos">Tratamientos</option>
+<option value="express">Express</option>
+</select>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase mb-1">Tarifa (ARS $)</label>
+<input class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="12500" required="" type="number"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase mb-1">Duración en Sillón</label>
+<select class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm">
+<option value="20">20 minutos (Express)</option>
+<option value="35">35 minutos</option>
+<option selected="" value="40">40 minutos (Estándar)</option>
+<option value="50">50 minutos</option>
+<option value="60">60 minutos (Completo)</option>
+<option value="90">90 minutos (Master)</option>
+</select>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase mb-1">Badge Opcional</label>
+<input class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="Ej: NOVEDAD, VIP" type="text"/>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase mb-1">Descripción del Protocolo</label>
+<textarea class="w-full px-space-md py-2 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="Detalle los productos utilizados, pasos y beneficios incluidos en el servicio..." rows="3"></textarea>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Activar en WhatsApp y Webhook</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Visible inmediatamente para reserva online</span>
+</div>
+<input checked="" class="w-5 h-5 accent-secondary cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-sm">
+<button class="px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container transition-colors" id="cancel-service-btn" type="button">
+            Cancelar
+          </button>
+<button class="px-space-md py-space-sm rounded-xl bg-secondary-fixed text-on-secondary-fixed font-label-lg text-label-lg shadow-sm hover:bg-secondary-container transition-colors" type="submit">
+            Guardar en Carta
+          </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Inline Script for UI Filters, Toggles, and Modal Actions -->
+<script>
+    (function initServicesPage() {
+      // Category Filter logic
+      const categoryTabs = document.querySelectorAll('#category-tabs .cat-pill');
+      const serviceCards = document.querySelectorAll('#service-catalog-grid .service-item');
+      const searchInput = document.getElementById('service-search-input');
+
+      function filterCatalog() {
+        const activeTab = document.querySelector('#category-tabs .cat-pill.active');
+        const selectedCat = activeTab ? activeTab.getAttribute('data-cat') : 'all';
+        const query = searchInput.value.toLowerCase().trim();
+
+        serviceCards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          const title = card.querySelector('h3').textContent.toLowerCase();
+          const desc = card.querySelector('p').textContent.toLowerCase();
+
+          const matchesCat = (selectedCat === 'all' || cardCat === selectedCat);
+          const matchesQuery = !query || title.includes(query) || desc.includes(query);
+
+          if (matchesCat && matchesQuery) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+
+      categoryTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          categoryTabs.forEach(t => {
+            t.classList.remove('active', 'bg-primary', 'text-on-primary');
+            t.classList.add('text-on-surface-variant');
+          });
+          tab.classList.add('active', 'bg-primary', 'text-on-primary');
+          tab.classList.remove('text-on-surface-variant');
+          filterCatalog();
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', filterCatalog);
+      }
+
+      // Toggle Switches (Activo / Pausado)
+      const toggleButtons = document.querySelectorAll('.toggle-btn');
+      toggleButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isActive = btn.getAttribute('data-active') === 'true';
+          const newState = !isActive;
+          btn.setAttribute('data-active', newState);
+
+          const dot = btn.querySelector('span');
+          const statusText = btn.parentElement.querySelector('.status-label');
+
+          if (newState) {
+            btn.classList.remove('bg-surface-container-highest');
+            btn.classList.add('bg-primary');
+            dot.classList.remove('left-0.5', 'translate-x-0');
+            dot.classList.add('right-0.5');
+            if (statusText) statusText.textContent = 'Activo';
+          } else {
+            btn.classList.remove('bg-primary');
+            btn.classList.add('bg-surface-container-highest');
+            dot.classList.remove('right-0.5');
+            dot.classList.add('left-0.5');
+            if (statusText) statusText.textContent = 'Pausado';
+          }
+        });
+      });
+
+      // Modal handling
+      const openModalBtn = document.getElementById('open-service-modal');
+      const quickAddCard = document.getElementById('quick-add-service-card');
+      const closeModalBtn = document.getElementById('close-service-modal');
+      const cancelModalBtn = document.getElementById('cancel-service-btn');
+      const modalBackdrop = document.getElementById('service-modal-backdrop');
+      const form = document.getElementById('new-service-form');
+
+      function openModal() {
+        if (modalBackdrop) modalBackdrop.classList.remove('hidden');
+      }
+
+      function closeModal() {
+        if (modalBackdrop) modalBackdrop.classList.add('hidden');
+      }
+
+      if (openModalBtn) openModalBtn.addEventListener('click', openModal);
+      if (quickAddCard) quickAddCard.addEventListener('click', openModal);
+      if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+      if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', (e) => {
+          if (e.target === modalBackdrop) closeModal();
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          closeModal();
+          form.reset();
+        });
+      }
+    })();
+  </script>
+</div></main></div></body></html>

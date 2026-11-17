@@ -1,0 +1,522 @@
+﻿@page "/administrar-servicios"
+
+@using BarberiaWA.Shared.DTO
+@using BarberiaWA.Servicio.ServicioHTTP
+@using System.Linq
+@using System.Globalization
+
+@inject IHttpService http
+
+<PageTitle>Administrar servicios - BarberiaWA</PageTitle>
+
+<div class="as-container">
+
+    <!-- ENCABEZADO -->
+    <header class="as-header">
+        <div class="as-header-info">
+            <div class="as-header-icon-wrap">
+                <span class="material-symbols-outlined">price_change</span>
+            </div>
+            <div>
+                <div class="as-breadcrumb">
+                    <span class="material-symbols-outlined as-bread-icon">storefront</span>
+                    <span>Gestión del Salón</span>
+                    <span class="material-symbols-outlined as-bread-sep">chevron_right</span>
+                    <span>Administrar Servicios</span>
+                </div>
+                <h1 class="as-title">Catálogo de Servicios &amp; Tarifas</h1>
+                <p class="as-subtitle">Agregá, modificá y eliminá los servicios disponibles en el salón.</p>
+            </div>
+        </div>
+        <span class="as-staff-badge">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            Área Operativa
+        </span>
+    </header>
+
+    <!-- MENSAJE DE ESTADO -->
+    @if (!string.IsNullOrWhiteSpace(mensaje))
+    {
+        <div class="as-mensaje @(esError ? "as-mensaje-error" : "as-mensaje-ok")">
+            <span class="material-symbols-outlined">@(esError ? "error" : "check_circle")</span>
+            <span>@mensaje</span>
+        </div>
+    }
+
+    <!-- MÉTRICAS CALCULADAS CON DATOS REALES DEL CATÁLOGO -->
+    @if (!cargando && servicios.Count > 0)
+    {
+        <div class="as-overview">
+            <div class="as-overview-card">
+                <div class="as-overview-top">
+                    <span class="as-overview-label">Carta vigente</span>
+                    <span class="material-symbols-outlined as-overview-icon">inventory_2</span>
+                </div>
+                <div class="as-overview-value">@servicios.Count</div>
+                <span class="as-overview-note">servicios en el catálogo</span>
+            </div>
+
+            <div class="as-overview-card">
+                <div class="as-overview-top">
+                    <span class="as-overview-label">Tarifa promedio</span>
+                    <span class="material-symbols-outlined as-overview-icon">payments</span>
+                </div>
+                <div class="as-overview-value">@FormatearPrecio(PrecioPromedio)</div>
+                <span class="as-overview-note">según precios registrados</span>
+            </div>
+
+            <div class="as-overview-card">
+                <div class="as-overview-top">
+                    <span class="as-overview-label">Duración promedio</span>
+                    <span class="material-symbols-outlined as-overview-icon">schedule</span>
+                </div>
+                <div class="as-overview-value">@DuracionPromedio.ToString("0", culturaArgentina) min</div>
+                <span class="as-overview-note">tiempo medio de atención</span>
+            </div>
+        </div>
+    }
+
+    <!-- PANEL: FORMULARIO AGREGAR / EDITAR -->
+    <div class="as-panel">
+        <div class="as-panel-header">
+            <div class="as-panel-title-row">
+                <span class="material-symbols-outlined as-panel-icon">@(editando ? "edit" : "add_circle")</span>
+                <div>
+                    <h2 class="as-panel-title">@(editando ? "Modificar servicio" : "Agregar nuevo servicio")</h2>
+                    <p class="as-panel-subtitle">
+                        @(editando
+                            ? "Editá los datos del servicio seleccionado y guardá los cambios."
+                            : "Completá los campos para registrar un nuevo servicio en el catálogo.")
+                    </p>
+                </div>
+            </div>
+            @if (editando)
+            {
+                <span class="as-editing-badge">Modo edición</span>
+            }
+        </div>
+
+        <div class="as-panel-body">
+
+            <!-- SUGERENCIAS (sólo al agregar) -->
+            @if (!editando)
+            {
+                <div class="as-field-group">
+                    <label class="as-label">
+                        <span class="material-symbols-outlined as-label-icon">auto_awesome</span>
+                        Usar servicio sugerido como base
+                    </label>
+                    <div class="as-select-wrap">
+                        <span class="material-symbols-outlined as-select-icon">expand_circle_down</span>
+                        <select class="as-select"
+                                value=""
+                                @onchange="AplicarSugerencia">
+                            <option value="">Seleccionar sugerencia...</option>
+                            <option value="clasico">Corte clásico — $18.000 · 30 min</option>
+                            <option value="degradado">Corte degradado — $20.000 · 45 min</option>
+                            <option value="barba">Barba — $12.000 · 30 min</option>
+                            <option value="combo">Corte y barba — $25.000 · 60 min</option>
+                        </select>
+                    </div>
+                    <p class="as-field-hint">Los precios y duraciones son orientativos. Podés modificarlos según tu barbería.</p>
+                </div>
+
+                <div class="as-divider"></div>
+            }
+
+            <div class="as-form-section">
+                <div class="as-form-section-heading">
+                    <span class="material-symbols-outlined">tune</span>
+                    <span>Datos del servicio</span>
+                </div>
+
+                <!-- GRILLA DE CAMPOS -->
+                <div class="as-form-grid">
+                    <!-- Nombre -->
+                    <div class="as-field-group as-field-full">
+                        <label class="as-label">
+                            <span class="material-symbols-outlined as-label-icon">label</span>
+                            Nombre del servicio
+                        </label>
+                        <input class="as-input"
+                               @bind="servicioFormulario.Nombre"
+                               placeholder="Ej: Corte clásico" />
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="as-field-group">
+                        <label class="as-label">
+                            <span class="material-symbols-outlined as-label-icon">payments</span>
+                            Precio (ARS $)
+                        </label>
+                        <input type="number"
+                               class="as-input"
+                               @bind="servicioFormulario.Precio"
+                               min="1"
+                               step="0.01"
+                               placeholder="Ej: 18000" />
+                    </div>
+
+                    <!-- Duración -->
+                    <div class="as-field-group">
+                        <label class="as-label">
+                            <span class="material-symbols-outlined as-label-icon">schedule</span>
+                            Duración (minutos)
+                        </label>
+                        <input type="number"
+                               class="as-input"
+                               @bind="servicioFormulario.DuracionMinutos"
+                               min="1"
+                               placeholder="Ej: 40" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="as-form-actions">
+                <button type="button"
+                        class="as-btn as-btn-primary"
+                        @onclick="GuardarServicio">
+                    <span class="material-symbols-outlined">@(editando ? "save" : "add_circle")</span>
+                    @(editando ? "Guardar cambios" : "Agregar servicio")
+                </button>
+
+                @if (editando)
+                {
+                    <button type="button"
+                            class="as-btn as-btn-secondary"
+                            @onclick="LimpiarFormulario">
+                        <span class="material-symbols-outlined">close</span>
+                        Cancelar edición
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL: LISTADO DE SERVICIOS -->
+    <div class="as-panel">
+        <div class="as-panel-header">
+            <div class="as-panel-title-row">
+                <span class="material-symbols-outlined as-panel-icon">inventory_2</span>
+                <div>
+                    <h2 class="as-panel-title">Servicios registrados</h2>
+                    <p class="as-panel-subtitle">
+                        @if (!cargando)
+                        {
+                            <span>@servicios.Count servicio@(servicios.Count != 1 ? "s" : "") en el catálogo actual.</span>
+                        }
+                        else
+                        {
+                            <span>Cargando catálogo...</span>
+                        }
+                    </p>
+                </div>
+            </div>
+            @if (!cargando && servicios.Count > 0)
+            {
+                <span class="as-metric-pill">
+                    <span class="as-metric-num">@servicios.Count</span>
+                    <span class="as-metric-label">total</span>
+                </span>
+            }
+        </div>
+
+        <div class="as-panel-body">
+            @if (cargando)
+            {
+                <div class="as-cargando">
+                    <span class="material-symbols-outlined as-spin">progress_activity</span>
+                    <span>Cargando servicios...</span>
+                </div>
+            }
+            else if (servicios.Count == 0)
+            {
+                <div class="as-vacio">
+                    <span class="material-symbols-outlined as-vacio-icon">spa</span>
+                    <h4>Sin servicios registrados</h4>
+                    <p>Agregá el primer servicio utilizando el formulario de arriba.</p>
+                </div>
+            }
+            else
+            {
+                <div class="as-servicios-grid">
+                    @foreach (var servicio in servicios)
+                    {
+                        var enEdicion = editando && servicioFormulario.Id == servicio.Id;
+
+                        <div class="as-service-card @(enEdicion ? "as-service-card-editing" : "")">
+                            @if (enEdicion)
+                            {
+                                <div class="as-card-editing-stripe"></div>
+                            }
+
+                            <div class="as-card-top">
+                                <div class="as-card-icon">
+                                    <span class="material-symbols-outlined">content_cut</span>
+                                </div>
+                                <div class="as-card-info">
+                                    <span class="as-card-name">@servicio.Nombre</span>
+                                    <div class="as-card-meta">
+                                        <span class="material-symbols-outlined as-meta-icon">schedule</span>
+                                        <span>@servicio.DuracionMinutos min</span>
+                                    </div>
+                                </div>
+                                <div class="as-card-price">
+                                    <span class="as-price-value">$@servicio.Precio.ToString("N0", culturaArgentina)</span>
+                                    <span class="as-price-currency">ARS</span>
+                                </div>
+                            </div>
+
+                            <div class="as-card-footer">
+                                <span class="as-card-id">
+                                    <span class="material-symbols-outlined">confirmation_number</span>
+                                    ID #@servicio.Id
+                                </span>
+
+                                <div class="as-card-actions">
+                                    <button type="button"
+                                            class="as-action-btn as-action-edit"
+                                            @onclick="() => EditarServicio(servicio)">
+                                        <span class="material-symbols-outlined">edit</span>
+                                        Editar
+                                    </button>
+                                    <button type="button"
+                                            class="as-action-btn as-action-delete"
+                                            @onclick="() => EliminarServicio(servicio.Id)">
+                                        <span class="material-symbols-outlined">delete</span>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    private List<ServicioDTO> servicios = new();
+
+    private ServicioDTO servicioFormulario = new();
+
+    private bool cargando = true;
+    private bool editando = false;
+    private bool esError = false;
+
+    private string mensaje = "";
+
+    private readonly CultureInfo culturaArgentina =
+        CultureInfo.GetCultureInfo("es-AR");
+
+    // Métricas calculadas únicamente con los servicios devueltos por la API.
+    private decimal PrecioPromedio =>
+        servicios.Count == 0 ? 0m : servicios.Average(s => s.Precio);
+
+    private decimal DuracionPromedio =>
+        servicios.Count == 0 ? 0m : servicios.Average(s => (decimal)s.DuracionMinutos);
+
+    private string FormatearPrecio(decimal precio) =>
+        $"${precio.ToString("N0", culturaArgentina)}";
+
+    // CARGAR SERVICIOS AL ABRIR LA PÁGINA
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarServicios();
+    }
+
+    // OBTENER SERVICIOS DE LA BASE DE DATOS
+    private async Task CargarServicios()
+    {
+        cargando = true;
+
+        var respuesta =
+            await http.GetAsync<List<ServicioDTO>>("api/servicio");
+
+        if (!respuesta.Error && respuesta.Respuesta != null)
+        {
+            servicios = respuesta.Respuesta;
+        }
+        else
+        {
+            mensaje = respuesta.Mensaje ??
+                "No se pudieron cargar los servicios.";
+
+            esError = true;
+        }
+
+        cargando = false;
+    }
+
+    // APLICAR PRECIOS Y DURACIONES SUGERIDAS
+    private void AplicarSugerencia(ChangeEventArgs e)
+    {
+        string opcion = e.Value?.ToString() ?? "";
+
+        switch (opcion)
+        {
+            case "clasico":
+
+                servicioFormulario.Nombre = "Corte clásico";
+                servicioFormulario.Precio = 18000;
+                servicioFormulario.DuracionMinutos = 30;
+
+                break;
+
+            case "degradado":
+
+                servicioFormulario.Nombre = "Corte degradado";
+                servicioFormulario.Precio = 20000;
+                servicioFormulario.DuracionMinutos = 45;
+
+                break;
+
+            case "barba":
+
+                servicioFormulario.Nombre = "Barba";
+                servicioFormulario.Precio = 12000;
+                servicioFormulario.DuracionMinutos = 30;
+
+                break;
+
+            case "combo":
+
+                servicioFormulario.Nombre = "Corte y barba";
+                servicioFormulario.Precio = 25000;
+                servicioFormulario.DuracionMinutos = 60;
+
+                break;
+        }
+    }
+
+    // AGREGAR O MODIFICAR SERVICIO
+    private async Task GuardarServicio()
+    {
+        mensaje = "";
+        esError = false;
+
+        if (string.IsNullOrWhiteSpace(servicioFormulario.Nombre))
+        {
+            MostrarError("Ingresá el nombre del servicio.");
+            return;
+        }
+
+        if (servicioFormulario.Precio <= 0)
+        {
+            MostrarError("El precio debe ser mayor que cero.");
+            return;
+        }
+
+        if (servicioFormulario.DuracionMinutos <= 0)
+        {
+            MostrarError("La duración debe ser mayor que cero.");
+            return;
+        }
+
+        if (editando)
+        {
+            var respuesta =
+                await http.PutAsync<ServicioDTO, bool>(
+                    $"api/servicio/{servicioFormulario.Id}",
+                    servicioFormulario);
+
+            if (!respuesta.Error && respuesta.Respuesta == true)
+            {
+                mensaje = "Servicio modificado correctamente.";
+
+                LimpiarFormulario();
+
+                await CargarServicios();
+            }
+            else
+            {
+                MostrarError(
+                    respuesta.Mensaje ??
+                    "No se pudo modificar el servicio.");
+            }
+        }
+        else
+        {
+            var respuesta =
+                await http.PostAsync<ServicioDTO, int>(
+                    "api/servicio",
+                    servicioFormulario);
+
+            if (!respuesta.Error)
+            {
+                mensaje = "Servicio agregado correctamente.";
+
+                LimpiarFormulario();
+
+                await CargarServicios();
+            }
+            else
+            {
+                MostrarError(
+                    respuesta.Mensaje ??
+                    "No se pudo agregar el servicio.");
+            }
+        }
+    }
+
+    // CARGAR DATOS PARA EDITAR
+    private void EditarServicio(ServicioDTO servicio)
+    {
+        servicioFormulario = new ServicioDTO
+        {
+            Id = servicio.Id,
+            Nombre = servicio.Nombre,
+            Precio = servicio.Precio,
+            DuracionMinutos = servicio.DuracionMinutos
+        };
+
+        editando = true;
+        mensaje = "";
+        esError = false;
+    }
+
+    // ELIMINAR SERVICIO
+    private async Task EliminarServicio(int id)
+    {
+        mensaje = "";
+        esError = false;
+
+        var respuesta =
+            await http.DeleteAsync<bool>($"api/servicio/{id}");
+
+        if (!respuesta.Error && respuesta.Respuesta == true)
+        {
+            mensaje = "Servicio eliminado correctamente.";
+
+            LimpiarFormulario();
+
+            await CargarServicios();
+        }
+        else
+        {
+            MostrarError(
+                respuesta.Mensaje ??
+                "No se pudo eliminar el servicio. Puede estar asociado a turnos existentes.");
+        }
+    }
+
+    // LIMPIAR FORMULARIO
+    private void LimpiarFormulario()
+    {
+        servicioFormulario = new ServicioDTO();
+
+        editando = false;
+    }
+
+    // MOSTRAR ERRORES
+    private void MostrarError(string texto)
+    {
+        mensaje = texto;
+        esError = true;
+    }
+
+}

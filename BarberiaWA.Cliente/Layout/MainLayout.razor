@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+<div class="bb-app-layout">
+    <!-- Componente NavMenu (incluye barra móvil y sidebar) -->
+    <NavMenu />
+
+    <!-- Área principal a la derecha -->
+    <div class="bb-main-content">
+        <!-- Header superior sticky -->
+        <header class="bb-top-header">
+            <div class="bb-header-left">
+                <span class="bb-header-badge">BarberiaWA Atelier</span>
+                <span class="bb-header-divider">•</span>
+                <span class="bb-header-motto">Excelencia & Tradición</span>
+            </div>
+            <div class="bb-header-right">
+                <div class="bb-header-date-pill">
+                    <span class="material-symbols-outlined bb-date-icon">today</span>
+                    <span class="bb-date-text">@DateTime.Now.ToString("dddd, dd 'de' MMMM", System.Globalization.CultureInfo.GetCultureInfo("es-AR"))</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenedor del contenido (@Body) -->
+        <main class="bb-page-container">
+            @Body
+        </main>
+    </div>
+</div>

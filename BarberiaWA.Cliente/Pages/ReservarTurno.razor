@@ -1,0 +1,848 @@
+﻿@page "/reservar-turno"
+
+@using BarberiaWA.Shared.DTO
+@using BarberiaWA.Servicio.ServicioHTTP
+@using System.Globalization
+
+@inject IHttpService http
+
+<PageTitle>Reservar turno - BarberiaWA</PageTitle>
+
+<div class="reserva-container">
+
+    <!-- Encabezado Stitch -->
+    <header class="reserva-header">
+        <div class="header-badge">
+            <span class="material-symbols-outlined">verified</span>
+            <span>Atelier Privado • Sede Central</span>
+        </div>
+        <h1 class="header-titulo">Agendamiento en Línea</h1>
+        <p class="header-subtitulo">Configure su ritual de grooming con precisión de autor y confort sin esperas.</p>
+    </header>
+
+    @if (cargando)
+    {
+        <div class="reserva-estado-card">
+            <span class="material-symbols-outlined spin-icon">sync</span>
+            <span>Cargando servicios y disponibilidad...</span>
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(error))
+    {
+        <div class="reserva-alerta reserva-alerta-error">
+            <span class="material-symbols-outlined">error</span>
+            <span>@error</span>
+        </div>
+    }
+    else if (servicios.Count == 0)
+    {
+        <div class="reserva-estado-card">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span>Todavía no hay servicios disponibles en el atelier.</span>
+        </div>
+    }
+    else
+    {
+        <!-- Stepper de progreso visual interactivo -->
+        <div class="stepper-progress">
+            <div class="stepper-step @(pasoActual == 1 ? "step-active" : (pasoActual > 1 ? "step-completed" : ""))">
+                <span class="step-num">
+                    @if (pasoActual > 1)
+                    {
+                        <span class="material-symbols-outlined step-check">check</span>
+                    }
+                    else
+                    {
+                        <span>1</span>
+                    }
+                </span>
+                <div class="step-content">
+                    <span class="step-number-tag">Paso 1</span>
+                    <span class="step-label">Servicio</span>
+                </div>
+            </div>
+
+            <div class="step-divider @(pasoActual > 1 ? "divider-completed" : "")"></div>
+
+            <div class="stepper-step @(pasoActual == 2 ? "step-active" : (pasoActual > 2 ? "step-completed" : ""))">
+                <span class="step-num">
+                    @if (pasoActual > 2)
+                    {
+                        <span class="material-symbols-outlined step-check">check</span>
+                    }
+                    else
+                    {
+                        <span>2</span>
+                    }
+                </span>
+                <div class="step-content">
+                    <span class="step-number-tag">Paso 2</span>
+                    <span class="step-label">Fecha</span>
+                </div>
+            </div>
+
+            <div class="step-divider @(pasoActual > 2 ? "divider-completed" : "")"></div>
+
+            <div class="stepper-step @(pasoActual == 3 ? "step-active" : (pasoActual > 3 ? "step-completed" : ""))">
+                <span class="step-num">
+                    @if (pasoActual > 3)
+                    {
+                        <span class="material-symbols-outlined step-check">check</span>
+                    }
+                    else
+                    {
+                        <span>3</span>
+                    }
+                </span>
+                <div class="step-content">
+                    <span class="step-number-tag">Paso 3</span>
+                    <span class="step-label">Horario</span>
+                </div>
+            </div>
+
+            <div class="step-divider @(pasoActual > 3 ? "divider-completed" : "")"></div>
+
+            <div class="stepper-step @(pasoActual == 4 ? "step-active" : "")">
+                <span class="step-num">
+                    <span>4</span>
+                </span>
+                <div class="step-content">
+                    <span class="step-number-tag">Paso 4</span>
+                    <span class="step-label">Contacto</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="reserva-layout">
+
+            <!-- Columna Principal -->
+            <main class="reserva-principal">
+
+                <!-- Paso 1: Servicios -->
+                <section class="reserva-card-section">
+                    <div class="seccion-cabecera">
+                        <div>
+                            <span class="paso-etiqueta">Paso 01</span>
+                            <h2 class="seccion-titulo">Elegir Servicio de Autor</h2>
+                        </div>
+                        <span class="badge-contador">@servicios.Count @(servicios.Count == 1 ? "Especialidad" : "Especialidades")</span>
+                    </div>
+
+                    <div class="servicios-grid">
+                        @foreach (var servicio in servicios)
+                        {
+                            bool seleccionado = servicioSeleccionadoId == servicio.Id;
+                            <button type="button"
+                                    class="servicio-card @(seleccionado ? "servicio-activo" : "")"
+                                    @onclick="() => SeleccionarServicio(servicio.Id)">
+                                <div class="servicio-card-top">
+                                    <div class="servicio-icono-wrap">
+                                        <span class="material-symbols-outlined">content_cut</span>
+                                    </div>
+                                    <div class="servicio-precio-wrap">
+                                        <span class="servicio-precio">$@servicio.Precio.ToString("N0", culturaArgentina)</span>
+                                        <span class="servicio-duracion">@servicio.DuracionMinutos min</span>
+                                    </div>
+                                </div>
+
+                                <div class="servicio-card-body">
+                                    <h3 class="servicio-nombre">@servicio.Nombre</h3>
+                                    <p class="servicio-desc">
+                                        Atención personalizada, toallas aromatizadas y protocolo completo de corte y cuidado.
+                                    </p>
+                                </div>
+
+                                <div class="servicio-card-footer">
+                                    <span class="servicio-seleccion-texto">
+                                        @(seleccionado ? "Servicio seleccionado ✓" : "Seleccionar servicio")
+                                    </span>
+                                </div>
+                            </button>
+                        }
+                    </div>
+                </section>
+
+                @if (servicioSeleccionado != null)
+                {
+                    <!-- Paso 2: Selección de Fecha -->
+                    <section class="reserva-card-section">
+                        <div class="seccion-cabecera">
+                            <div>
+                                <span class="paso-etiqueta">Paso 02</span>
+                                <h2 class="seccion-titulo">Seleccionar Fecha</h2>
+                            </div>
+                            <div class="fecha-badge">
+                                <span class="material-symbols-outlined">calendar_month</span>
+                                <span>@fechaSeleccionada.ToString("MMMM yyyy", culturaArgentina)</span>
+                            </div>
+                        </div>
+
+                        <div class="campo-reserva-grupo">
+                            <label for="fechaReserva" class="form-label-custom">Fecha del turno</label>
+                            <input id="fechaReserva"
+                                   type="date"
+                                   class="form-control-custom"
+                                   min="@fechaMinima"
+                                   @bind="fechaSeleccionada"
+                                   @bind:format="yyyy-MM-dd"
+                                   @bind:after="AlCambiarFecha" />
+
+                            <div class="input-info-hint">
+                                <span class="material-symbols-outlined">schedule</span>
+                                <span>Atención de lunes a sábado, de 10:00 a 21:00 hs. (Domingos cerrado)</span>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Horarios Disponibles -->
+                        <div class="horarios-seccion-wrap">
+                            <div class="seccion-cabecera">
+                                <div>
+                                    <span class="paso-etiqueta">Paso 03</span>
+                                    <h2 class="seccion-titulo">Horarios Disponibles</h2>
+                                </div>
+                                <div class="horarios-leyenda">
+                                    <span class="leyenda-item"><span class="leyenda-dot dot-activo"></span> Seleccionado</span>
+                                    <span class="leyenda-item"><span class="leyenda-dot dot-libre"></span> Libre</span>
+                                </div>
+                            </div>
+
+                            @if (fechaValida)
+                            {
+                                @if (horariosDisponibles.Count > 0)
+                                {
+                                    <div class="horarios-grid">
+                                        @foreach (var horario in horariosDisponibles)
+                                        {
+                                            bool horaActiva = horaSeleccionada == horario;
+                                            <button type="button"
+                                                    class="horario-slot-btn @(horaActiva ? "slot-activo" : "")"
+                                                    @onclick="() => SeleccionarHorario(horario)">
+                                                <span>@horario</span>
+                                                @if (horaActiva)
+                                                {
+                                                    <span class="material-symbols-outlined slot-check">check</span>
+                                                }
+                                            </button>
+                                        }
+                                    </div>
+
+                                    <div class="horarios-aviso">
+                                        <span class="material-symbols-outlined">info</span>
+                                        <span>
+                                            Duración estimada: <strong>@servicioSeleccionado.DuracionMinutos minutos</strong>. Los horarios disponibles se calculan cada 15 minutos evitando superposición de turnos.
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="aviso-sin-turnos">
+                                        <span class="material-symbols-outlined">event_busy</span>
+                                        <div>
+                                            <strong>No hay horarios disponibles para esta fecha.</strong>
+                                            <p>Por favor seleccioná otro día de atención.</p>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="aviso-sin-turnos">
+                                    <span class="material-symbols-outlined">warning</span>
+                                    <div>
+                                        <strong>Fecha no válida</strong>
+                                        <p>Seleccioná una fecha posterior a hoy que no sea domingo.</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                }
+
+                @if (servicioSeleccionado != null &&
+                     !string.IsNullOrWhiteSpace(horaSeleccionada) &&
+                     horariosDisponibles.Contains(horaSeleccionada))
+                {
+                    <!-- Paso 4: Datos del Cliente -->
+                    <section class="reserva-card-section">
+                        <div class="seccion-cabecera">
+                            <div>
+                                <span class="paso-etiqueta">Paso 04</span>
+                                <h2 class="seccion-titulo">Tus Datos de Contacto</h2>
+                            </div>
+                            <span class="material-symbols-outlined icono-contacto">person_pin</span>
+                        </div>
+
+                        <div class="formulario-cliente-grid">
+                            <div class="campo-reserva-grupo">
+                                <label class="form-label-custom">Nombre</label>
+                                <input class="form-control-custom"
+                                       @bind="nombre"
+                                       placeholder="Ingresá tu nombre" />
+                            </div>
+
+                            <div class="campo-reserva-grupo">
+                                <label class="form-label-custom">Apellido</label>
+                                <input class="form-control-custom"
+                                       @bind="apellido"
+                                       placeholder="Ingresá tu apellido" />
+                            </div>
+
+                            <div class="campo-reserva-grupo">
+                                <label class="form-label-custom">Email</label>
+                                <input class="form-control-custom"
+                                       type="email"
+                                       @bind="email"
+                                       placeholder="nombre@correo.com" />
+                            </div>
+
+                            <div class="campo-reserva-grupo">
+                                <label class="form-label-custom">Teléfono</label>
+                                <input class="form-control-custom"
+                                       type="tel"
+                                       @bind="telefono"
+                                       placeholder="Tu número de teléfono" />
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(errorReserva))
+                {
+                    <div class="reserva-alerta reserva-alerta-error">
+                        <span class="material-symbols-outlined">error</span>
+                        <span>@errorReserva</span>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(mensaje))
+                {
+                    <div class="reserva-alerta reserva-alerta-exito">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>@mensaje</span>
+                    </div>
+                }
+
+            </main>
+
+            <!-- Columna Lateral: Ticket Resumen Sticky -->
+            <aside class="reserva-aside">
+                <div class="ticket-resumen">
+                    <div class="ticket-glow"></div>
+
+                    <div class="ticket-header">
+                        <span class="ticket-sub">Resumen de Turno</span>
+                        <span class="ticket-tag">Atelier Privado</span>
+                    </div>
+
+                    @if (servicioSeleccionado != null)
+                    {
+                        <div class="ticket-body">
+                            <div class="ticket-servicio-fila">
+                                <span class="ticket-servicio-nombre">@servicioSeleccionado.Nombre</span>
+                                <span class="ticket-servicio-precio">$@servicioSeleccionado.Precio.ToString("N0", culturaArgentina)</span>
+                            </div>
+
+                            <div class="ticket-meta-fila">
+                                <span class="ticket-duracion">
+                                    <span class="material-symbols-outlined">schedule</span>
+                                    @servicioSeleccionado.DuracionMinutos minutos
+                                </span>
+                                <span class="ticket-precio-base">Precio final</span>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(horaSeleccionada) &&
+                                 horariosDisponibles.Contains(horaSeleccionada))
+                            {
+                                <div class="ticket-detalles-box">
+                                    <div class="ticket-detalle-item">
+                                        <span class="material-symbols-outlined">event</span>
+                                        <strong>@fechaSeleccionada.ToString("dddd d 'de' MMMM", culturaArgentina), @horaSeleccionada hs</strong>
+                                    </div>
+                                    <div class="ticket-detalle-item item-sub">
+                                        <span class="material-symbols-outlined">update</span>
+                                        <span>Finalización estimada: @HoraFinalizacion hs</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="ticket-placeholder-box">
+                                    <span class="material-symbols-outlined">info</span>
+                                    <span>Elegí fecha y horario disponible para agendar.</span>
+                                </div>
+                            }
+
+                            <div class="ticket-total-wrap">
+                                <span class="ticket-total-label">Total del Servicio</span>
+                                <span class="ticket-total-monto">$@servicioSeleccionado.Precio.ToString("N0", culturaArgentina)</span>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(horaSeleccionada) &&
+                                 horariosDisponibles.Contains(horaSeleccionada))
+                            {
+                                <button type="button"
+                                        class="btn-confirmar-ticket"
+                                        disabled="@guardando"
+                                        @onclick="ConfirmarReserva">
+                                    <span>@(guardando ? "Confirmando reserva..." : "Confirmar Reserva")</span>
+                                    <span class="material-symbols-outlined">arrow_forward</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn-confirmar-ticket"
+                                        disabled>
+                                    <span>Seleccioná fecha y hora</span>
+                                </button>
+                            }
+
+                            <p class="ticket-aviso">El turno quedará registrado en el sistema al confirmar la reserva.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="ticket-vacio">
+                            <span class="material-symbols-outlined empty-icon">content_cut</span>
+                            <h4>Ningún servicio elegido</h4>
+                            <p>Seleccioná un servicio de autor en el catálogo para armar tu orden de turno.</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Tarjeta con información real del salón -->
+                <div class="salon-info-card">
+                    <div class="salon-info-icon-wrap">
+                        <span class="material-symbols-outlined">storefront</span>
+                    </div>
+                    <div>
+                        <strong class="salon-info-titulo">Atención en Sede Central</strong>
+                        <p class="salon-info-texto">Lunes a sábados de 10:00 a 21:00 hs. Presentate unos minutos antes de tu turno.</p>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    }
+
+</div>
+
+@code {
+    private readonly CultureInfo culturaArgentina =
+        CultureInfo.GetCultureInfo("es-AR");
+
+    private List<ServicioDTO> servicios = new();
+    private List<TurnoDTO> turnos = new();
+    private List<ClienteDTO> clientes = new();
+
+    private int servicioSeleccionadoId;
+
+    private ServicioDTO? servicioSeleccionado =>
+        servicios.FirstOrDefault(s => s.Id == servicioSeleccionadoId);
+
+    private bool cargando = true;
+    private bool guardando = false;
+
+    private string error = "";
+    private string errorReserva = "";
+    private string mensaje = "";
+
+    private string nombre = "";
+    private string apellido = "";
+    private string telefono = "";
+    private string email = "";
+
+    private DateTime fechaSeleccionada = DateTime.Today;
+    private string horaSeleccionada = "";
+
+    private string fechaMinima =>
+        DateTime.Today.ToString("yyyy-MM-dd");
+
+    private bool fechaValida =>
+        fechaSeleccionada.Date >= DateTime.Today &&
+        fechaSeleccionada.DayOfWeek != DayOfWeek.Sunday;
+
+    private int pasoActual
+    {
+        get
+        {
+            if (servicioSeleccionado == null) return 1;
+            if (!fechaValida) return 2;
+            if (string.IsNullOrWhiteSpace(horaSeleccionada) || !horariosDisponibles.Contains(horaSeleccionada)) return 3;
+            return 4;
+        }
+    }
+
+    private string HoraFinalizacion
+    {
+        get
+        {
+            if (servicioSeleccionado == null ||
+                string.IsNullOrWhiteSpace(horaSeleccionada))
+            {
+                return "";
+            }
+
+            if (!TimeSpan.TryParseExact(
+                horaSeleccionada,
+                @"hh\:mm",
+                CultureInfo.InvariantCulture,
+                out var horaInicio))
+            {
+                return "";
+            }
+
+            return horaInicio
+                .Add(TimeSpan.FromMinutes(
+                    servicioSeleccionado.DuracionMinutos))
+                .ToString(@"hh\:mm");
+        }
+    }
+
+    private List<string> horariosDisponibles
+    {
+        get
+        {
+            var horarios = new List<string>();
+
+            if (servicioSeleccionado == null || !fechaValida)
+                return horarios;
+
+            int duracion = servicioSeleccionado.DuracionMinutos;
+
+            if (duracion <= 0)
+                return horarios;
+
+            var apertura = new TimeSpan(10, 0, 0);
+            var cierre = new TimeSpan(21, 0, 0);
+
+            var hora = apertura;
+
+            while (hora.Add(TimeSpan.FromMinutes(duracion)) <= cierre)
+            {
+                var inicio = fechaSeleccionada.Date + hora;
+                var finNuevo = inicio.AddMinutes(duracion);
+
+                bool horarioFuturo =
+                    fechaSeleccionada.Date > DateTime.Today ||
+                    inicio > DateTime.Now;
+
+                bool ocupado = turnos.Any(t =>
+                {
+                    if (string.Equals(
+                        t.Estado,
+                        "Cancelado",
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+
+                    if (t.FechaHora.Date != fechaSeleccionada.Date)
+                        return false;
+
+                    var servicioExistente =
+                        servicios.FirstOrDefault(s => s.Id == t.ServicioId);
+
+                    if (servicioExistente == null ||
+                        servicioExistente.DuracionMinutos <= 0)
+                    {
+                        return false;
+                    }
+
+                    var inicioExistente = t.FechaHora;
+                    var finExistente = inicioExistente.AddMinutes(
+                        servicioExistente.DuracionMinutos);
+
+                    return inicio < finExistente &&
+                           finNuevo > inicioExistente;
+                });
+
+                if (horarioFuturo && !ocupado)
+                {
+                    horarios.Add(hora.ToString(@"hh\:mm"));
+                }
+
+                hora = hora.Add(TimeSpan.FromMinutes(15));
+            }
+
+            return horarios;
+        }
+    }
+
+    private void SeleccionarServicio(int id)
+    {
+        servicioSeleccionadoId = id;
+        horaSeleccionada = "";
+        errorReserva = "";
+        mensaje = "";
+    }
+
+    private void AlCambiarFecha()
+    {
+        horaSeleccionada = "";
+        errorReserva = "";
+        mensaje = "";
+    }
+
+    private void SeleccionarHorario(string horario)
+    {
+        horaSeleccionada = horario;
+        errorReserva = "";
+        mensaje = "";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var respuestaServicios =
+                await http.GetAsync<List<ServicioDTO>>("api/servicio");
+
+            if (respuestaServicios.Error)
+            {
+                error = respuestaServicios.Mensaje ??
+                        "No se pudieron cargar los servicios.";
+                return;
+            }
+
+            servicios = respuestaServicios.Respuesta ??
+                        new List<ServicioDTO>();
+
+            var respuestaTurnos =
+                await http.GetAsync<List<TurnoDTO>>("api/turno");
+
+            if (respuestaTurnos.Error)
+            {
+                error = respuestaTurnos.Mensaje ??
+                        "No se pudieron cargar los turnos.";
+                return;
+            }
+
+            turnos = respuestaTurnos.Respuesta ??
+                     new List<TurnoDTO>();
+
+            var respuestaClientes =
+                await http.GetAsync<List<ClienteDTO>>("api/cliente");
+
+            if (respuestaClientes.Error)
+            {
+                error = respuestaClientes.Mensaje ??
+                        "No se pudieron cargar los clientes.";
+                return;
+            }
+
+            clientes = respuestaClientes.Respuesta ??
+                       new List<ClienteDTO>();
+        }
+        catch (Exception ex)
+        {
+            error = $"No se pudo cargar la información: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private async Task ConfirmarReserva()
+    {
+        errorReserva = "";
+        mensaje = "";
+
+        if (servicioSeleccionado == null)
+        {
+            errorReserva = "Seleccioná un servicio.";
+            return;
+        }
+
+        if (!fechaValida)
+        {
+            errorReserva = "Seleccioná una fecha válida.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(horaSeleccionada) ||
+            !horariosDisponibles.Contains(horaSeleccionada))
+        {
+            errorReserva = "Seleccioná un horario disponible.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(nombre) ||
+            string.IsNullOrWhiteSpace(apellido) ||
+            string.IsNullOrWhiteSpace(telefono) ||
+            string.IsNullOrWhiteSpace(email))
+        {
+            errorReserva = "Completá todos los datos del cliente.";
+            return;
+        }
+
+        if (!email.Contains('@') || !email.Contains('.'))
+        {
+            errorReserva = "Ingresá un email válido.";
+            return;
+        }
+
+        guardando = true;
+
+        try
+        {
+            var respuestaClientes =
+                await http.GetAsync<List<ClienteDTO>>("api/cliente");
+
+            if (respuestaClientes.Error)
+            {
+                errorReserva = respuestaClientes.Mensaje ??
+                    "No se pudieron consultar los clientes.";
+                return;
+            }
+
+            clientes = respuestaClientes.Respuesta ??
+                       new List<ClienteDTO>();
+
+            var clienteExistente = clientes.FirstOrDefault(c =>
+                !string.IsNullOrWhiteSpace(c.Email) &&
+                c.Email.Trim().Equals(
+                    email.Trim(),
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (clienteExistente == null)
+            {
+                clienteExistente = clientes.FirstOrDefault(c =>
+                    !string.IsNullOrWhiteSpace(c.Telefono) &&
+                    c.Telefono.Trim() == telefono.Trim());
+            }
+
+            int clienteId;
+
+            if (clienteExistente != null)
+            {
+                clienteId = clienteExistente.Id;
+            }
+            else
+            {
+                var nuevoCliente = new ClienteDTO
+                {
+                    Nombre = nombre.Trim(),
+                    Apellido = apellido.Trim(),
+                    Telefono = telefono.Trim(),
+                    Email = email.Trim()
+                };
+
+                var respuestaCliente =
+                    await http.PostAsync<ClienteDTO, int>(
+                        "api/cliente",
+                        nuevoCliente);
+
+                if (respuestaCliente.Error)
+                {
+                    errorReserva = respuestaCliente.Mensaje ??
+                        "No se pudieron guardar los datos del cliente.";
+                    return;
+                }
+
+                clienteId = respuestaCliente.Respuesta;
+
+                if (clienteId <= 0)
+                {
+                    errorReserva = "No se pudo obtener el ID del cliente.";
+                    return;
+                }
+            }
+
+            var clienteVerificado =
+                await http.GetAsync<ClienteDTO>(
+                    $"api/cliente/{clienteId}");
+
+            if (clienteVerificado.Error ||
+                clienteVerificado.Respuesta == null)
+            {
+                errorReserva =
+                    $"No existe el cliente con ID {clienteId}. No se puede crear el turno.";
+                return;
+            }
+
+            if (!TimeSpan.TryParseExact(
+                horaSeleccionada,
+                @"hh\:mm",
+                CultureInfo.InvariantCulture,
+                out var hora))
+            {
+                errorReserva = "El horario seleccionado no es válido.";
+                return;
+            }
+
+            var fechaHora = fechaSeleccionada.Date.Add(hora);
+
+            var respuestaTurnos =
+                await http.GetAsync<List<TurnoDTO>>("api/turno");
+
+            if (respuestaTurnos.Error)
+            {
+                errorReserva = respuestaTurnos.Mensaje ??
+                    "No se pudieron consultar los turnos.";
+                return;
+            }
+
+            turnos = respuestaTurnos.Respuesta ??
+                     new List<TurnoDTO>();
+
+            if (!horariosDisponibles.Contains(horaSeleccionada))
+            {
+                horaSeleccionada = "";
+                errorReserva =
+                    "Ese horario ya no está disponible. Seleccioná otro.";
+                return;
+            }
+
+            var nuevoTurno = new TurnoDTO
+            {
+                FechaHora = fechaHora,
+                Estado = "Pendiente",
+                ClienteId = clienteId,
+                ServicioId = servicioSeleccionado.Id
+            };
+
+            var respuestaTurno =
+                await http.PostAsync<TurnoDTO, int>(
+                    "api/turno",
+                    nuevoTurno);
+
+            if (respuestaTurno.Error)
+            {
+                errorReserva = respuestaTurno.Mensaje ??
+                    "No se pudo guardar el turno. Puede que el horario ya esté ocupado.";
+                return;
+            }
+
+            int turnoId = respuestaTurno.Respuesta;
+
+            if (turnoId <= 0)
+            {
+                errorReserva = "No se pudo obtener el número del turno.";
+                return;
+            }
+
+            nuevoTurno.Id = turnoId;
+            turnos.Add(nuevoTurno);
+
+            mensaje =
+                $"¡Reserva confirmada! Tu número de turno es #{turnoId}.";
+
+            horaSeleccionada = "";
+            nombre = "";
+            apellido = "";
+            telefono = "";
+            email = "";
+        }
+        catch (Exception ex)
+        {
+            errorReserva =
+                $"Ocurrió un error al reservar: {ex.Message}";
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+}

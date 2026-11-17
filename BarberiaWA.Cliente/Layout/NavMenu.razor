@@ -1,0 +1,102 @@
+﻿<!-- Barra móvil superior (pantallas pequeñas) -->
+<div class="bb-mobile-bar">
+    <div class="bb-brand">
+        <div class="bb-brand-icon">
+            <span class="material-symbols-outlined">content_cut</span>
+        </div>
+        <div class="bb-brand-text">
+            <span class="bb-brand-name">BarberiaWA</span>
+            <span class="bb-brand-sub">Atelier & Grooming</span>
+        </div>
+    </div>
+
+    <button type="button" class="bb-hamburger-btn" @onclick="ToggleNavMenu" aria-label="Abrir menú">
+        <span class="material-symbols-outlined">@(collapseNavMenu ? "menu" : "close")</span>
+    </button>
+</div>
+
+<!-- Telón de fondo oscuro para móvil al desplegar el menú -->
+@if (!collapseNavMenu)
+{
+    <div class="bb-mobile-backdrop" @onclick="ToggleNavMenu"></div>
+}
+
+<!-- Sidebar de navegación principal -->
+<aside class="bb-sidebar @(collapseNavMenu ? "" : "bb-sidebar-open")">
+    <div class="bb-sidebar-header">
+        <div class="bb-brand">
+            <div class="bb-brand-icon">
+                <span class="material-symbols-outlined">content_cut</span>
+            </div>
+            <div class="bb-brand-text">
+                <span class="bb-brand-name">BarberiaWA</span>
+                <span class="bb-brand-sub">Atelier & Grooming</span>
+            </div>
+        </div>
+
+        <div class="bb-salon-badge">
+            <span class="bb-status-pulse"></span>
+            <span class="bb-salon-text">Salón Operativo</span>
+        </div>
+    </div>
+
+    <nav class="bb-nav-menu">
+        <!-- GRUPO 1: EXPERIENCIA DEL CLIENTE -->
+        <div class="bb-nav-group">
+            <div class="bb-nav-group-header">
+                <span class="material-symbols-outlined bb-group-icon">person</span>
+                <span class="bb-nav-section-title">Experiencia del Cliente</span>
+            </div>
+
+            <NavLink class="bb-nav-item" href="" Match="NavLinkMatch.All" @onclick="CerrarEnMovil">
+                <span class="material-symbols-outlined bb-nav-icon">home</span>
+                <span class="bb-nav-label">Inicio</span>
+            </NavLink>
+
+            <NavLink class="bb-nav-item" href="reservar-turno" @onclick="CerrarEnMovil">
+                <span class="material-symbols-outlined bb-nav-icon">edit_calendar</span>
+                <span class="bb-nav-label">Reservar turno</span>
+            </NavLink>
+        </div>
+
+        <div class="bb-nav-divider"></div>
+
+        <!-- GRUPO 2: GESTIÓN DEL SALÓN -->
+        <div class="bb-nav-group bb-nav-group-staff">
+            <div class="bb-nav-group-header">
+                <span class="material-symbols-outlined bb-group-icon">storefront</span>
+                <span class="bb-nav-section-title">Gestión del Salón</span>
+                <span class="bb-group-tag">Staff</span>
+            </div>
+
+            <NavLink class="bb-nav-item" href="Turnos" @onclick="CerrarEnMovil">
+                <span class="material-symbols-outlined bb-nav-icon">event_available</span>
+                <span class="bb-nav-label">Turnos reservados</span>
+            </NavLink>
+
+            <NavLink class="bb-nav-item" href="historial-clientes" @onclick="CerrarEnMovil">
+                <span class="material-symbols-outlined bb-nav-icon">badge</span>
+                <span class="bb-nav-label">Historial de clientes</span>
+            </NavLink>
+
+            <NavLink class="bb-nav-item" href="administrar-servicios" @onclick="CerrarEnMovil">
+                <span class="material-symbols-outlined bb-nav-icon">spa</span>
+                <span class="bb-nav-label">Administrar servicios</span>
+            </NavLink>
+        </div>
+    </nav>
+</aside>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void CerrarEnMovil()
+    {
+        collapseNavMenu = true;
+    }
+}

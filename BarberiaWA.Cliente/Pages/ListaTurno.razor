@@ -1,0 +1,965 @@
+﻿@page "/turnos"
+
+@using BarberiaWA.Shared.DTO
+@using BarberiaWA.Servicio.ServicioHTTP
+@using BarberiaWA.Cliente.Pages.Shared
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Globalization
+
+@inject IHttpService http
+
+<PageTitle>Turnos reservados - BarberiaWA</PageTitle>
+
+<div class="turnos-container">
+
+    <!-- Encabezado Stitch (Panel Operativo del Barbero) -->
+    <header class="turnos-header">
+        <div class="turnos-header-top">
+            <div class="turnos-badge-wrap">
+                <span class="turnos-badge">
+                    <span class="material-symbols-outlined">shield_person</span>
+                    <span>Panel de Control • Barbero</span>
+                </span>
+                <span class="turnos-fecha-hoy">
+                    <span class="material-symbols-outlined">today</span>
+                    <span>@DateTime.Today.ToString("dddd d 'de' MMMM 'de' yyyy", culturaArgentina)</span>
+                </span>
+            </div>
+        </div>
+
+        <h1 class="turnos-titulo">Agenda del Salón & Gestión de Turnos</h1>
+        <p class="turnos-subtitulo">
+            Control operativo diario: confirmación de servicios concluidos, reprogramación y seguimiento de la agenda.
+        </p>
+    </header>
+
+    @if (!string.IsNullOrEmpty(mensajeAccion))
+    {
+        <div class="turnos-alerta @(accionCorrecta ? "turnos-alerta-exito" : "turnos-alerta-error")">
+            <span class="material-symbols-outlined">@(accionCorrecta ? "check_circle" : "error")</span>
+            <span>@mensajeAccion</span>
+        </div>
+    }
+
+    @if (cargando)
+    {
+        <div class="turnos-alerta turnos-alerta-info">
+            <span class="material-symbols-outlined spin-icon">sync</span>
+            <span>Cargando turnos y agenda del atelier...</span>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(error))
+    {
+        <div class="turnos-alerta turnos-alerta-error">
+            <span class="material-symbols-outlined">error</span>
+            <span>@error</span>
+        </div>
+    }
+    else if (turnosVisibles.Count == 0)
+    {
+        <div class="turnos-vacio-card">
+            <span class="material-symbols-outlined empty-icon">event_busy</span>
+            <h4>No hay turnos registrados</h4>
+            <p>Por el momento no se registran reservas activas en el sistema.</p>
+        </div>
+    }
+    else
+    {
+        <!-- Métricas Rápidas (Calculadas 100% con datos reales de la API) -->
+        <div class="turnos-metricas-grid">
+            <div class="metrica-card card-destacada">
+                <div class="metrica-info">
+                    <span class="metrica-label">Total en Agenda</span>
+                    <span class="metrica-valor">@turnosVisibles.Count</span>
+                    <span class="metrica-sub">Reservas registradas</span>
+                </div>
+                <div class="metrica-icono-wrap">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                </div>
+            </div>
+
+            <div class="metrica-card">
+                <div class="metrica-info">
+                    <span class="metrica-label">Reservas Para Hoy</span>
+                    <span class="metrica-valor">@TurnosHoyCount</span>
+                    <span class="metrica-sub">@(TurnosHoyCount == 1 ? "Turno asignado hoy" : "Turnos asignados hoy")</span>
+                </div>
+                <div class="metrica-icono-wrap">
+                    <span class="material-symbols-outlined">schedule</span>
+                </div>
+            </div>
+
+            <div class="metrica-card">
+                <div class="metrica-info">
+                    <span class="metrica-label">Por Atender</span>
+                    <span class="metrica-valor">@TurnosPendientesCount</span>
+                    <span class="metrica-sub">En estado pendiente</span>
+                </div>
+                <div class="metrica-icono-wrap">
+                    <span class="material-symbols-outlined">pending_actions</span>
+                </div>
+            </div>
+
+            <div class="metrica-card">
+                <div class="metrica-info">
+                    <span class="metrica-label">Servicios Realizados</span>
+                    <span class="metrica-valor">@TurnosRealizadosCount</span>
+                    <span class="metrica-sub sub-neutral">Atenciones concluidas</span>
+                </div>
+                <div class="metrica-icono-wrap">
+                    <span class="material-symbols-outlined">task_alt</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de Búsqueda y Filtros Reactivos -->
+        <div class="turnos-toolbar">
+            <div class="turnos-buscador-wrap">
+                <span class="material-symbols-outlined">search</span>
+                <input class="turnos-buscador-input"
+                       type="text"
+                       placeholder="Buscar por cliente, teléfono, servicio o #ID..."
+                       @bind="filtroBusqueda"
+                       @bind:event="oninput" />
+            </div>
+
+            <div class="turnos-filtros-wrap">
+                <button type="button"
+                        class="filtro-pill @(filtroEstado == "" ? "activo" : "")"
+                        @onclick='() => SetFiltroEstado("")'>
+                    <span>Todos</span>
+                    <span class="badge-conteo">@turnosVisibles.Count</span>
+                </button>
+
+                <button type="button"
+                        class="filtro-pill @(filtroEstado == "Pendiente" ? "activo" : "")"
+                        @onclick='() => SetFiltroEstado("Pendiente")'>
+                    <span>Pendientes</span>
+                    <span class="badge-conteo">@TurnosPendientesCount</span>
+                </button>
+
+                <button type="button"
+                        class="filtro-pill @(filtroEstado == "Realizado" ? "activo" : "")"
+                        @onclick='() => SetFiltroEstado("Realizado")'>
+                    <span>Realizados</span>
+                    <span class="badge-conteo">@TurnosRealizadosCount</span>
+                </button>
+
+                @if (TurnosConfirmadosCount > 0)
+                {
+                    <button type="button"
+                            class="filtro-pill @(filtroEstado == "Confirmado" ? "activo" : "")"
+                            @onclick='() => SetFiltroEstado("Confirmado")'>
+                        <span>Confirmados</span>
+                        <span class="badge-conteo">@TurnosConfirmadosCount</span>
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Listado de Tarjetas -->
+        @if (turnosFiltrados.Count == 0)
+        {
+            <div class="turnos-vacio-card">
+                <span class="material-symbols-outlined empty-icon">filter_alt_off</span>
+                <h4>Sin coincidencias</h4>
+                <p>No se encontraron reservas con los criterios de búsqueda o filtros seleccionados.</p>
+            </div>
+        }
+        else
+        {
+            <div class="turnos-grid">
+                @foreach (var turno in turnosFiltrados)
+                {
+                    var cliente = clientes.FirstOrDefault(c => c.Id == turno.ClienteId);
+                    var servicio = servicios.FirstOrDefault(s => s.Id == turno.ServicioId);
+                    bool esRealizado = string.Equals(turno.Estado, "Realizado", StringComparison.OrdinalIgnoreCase);
+
+                    <article class="turno-card @(esRealizado ? "card-realizado" : "")">
+
+                        <div>
+                            <!-- Cabecera de la tarjeta con avatar e info del cliente -->
+                            <div class="turno-card-header">
+                                <div class="turno-cliente-wrap">
+                                    <div class="turno-avatar">
+                                        @ObtenerIniciales(cliente)
+                                    </div>
+                                    <div class="turno-cliente-info">
+                                        <div class="turno-cliente-titulo">
+                                            <h3 class="turno-cliente-nombre">
+                                                @(cliente != null ? $"{cliente.Nombre} {cliente.Apellido}" : "Cliente sin registrar")
+                                            </h3>
+                                            <span class="turno-id-badge">#@turno.Id</span>
+                                        </div>
+                                        @if (cliente != null)
+                                        {
+                                            <div class="turno-contacto-items">
+                                                <span class="contacto-item">
+                                                    <span class="material-symbols-outlined">call</span>
+                                                    <span>@cliente.Telefono</span>
+                                                </span>
+                                                @if (!string.IsNullOrWhiteSpace(cliente.Email))
+                                                {
+                                                    <span class="contacto-item">
+                                                        <span class="material-symbols-outlined">mail</span>
+                                                        <span>@cliente.Email</span>
+                                                    </span>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="turno-cliente-contacto text-danger">Datos de contacto no disponibles</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <span class="turno-estado-badge @ObtenerClaseEstadoBadge(turno.Estado)">
+                                    <span class="estado-dot"></span>
+                                    <span>@turno.Estado</span>
+                                </span>
+                            </div>
+
+                            <!-- Grilla de detalles: Servicio y Fecha/Horario -->
+                            <div class="turno-detalles-box">
+                                <div class="turno-detalle-item item-servicio">
+                                    <span class="detalle-label">Servicio Reservado</span>
+                                    <div class="detalle-valor-wrap">
+                                        <span class="material-symbols-outlined detalle-icono">content_cut</span>
+                                        <span class="detalle-nombre-servicio">@(servicio != null ? servicio.Nombre : "Servicio no disponible")</span>
+                                    </div>
+                                    @if (servicio != null)
+                                    {
+                                        <span class="detalle-precio">$@servicio.Precio.ToString("N0", culturaArgentina) ARS</span>
+                                    }
+                                </div>
+
+                                <div class="turno-detalle-item item-horario">
+                                    <span class="detalle-label">Fecha y Horario</span>
+                                    <div class="detalle-valor-wrap">
+                                        <span class="material-symbols-outlined detalle-icono">event</span>
+                                        <span class="detalle-fecha-texto">@turno.FechaHora.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <span class="detalle-horario-sub">
+                                        <span class="material-symbols-outlined">schedule</span>
+                                        <span>@turno.FechaHora.ToString("HH:mm") hs @(servicio != null ? $"({servicio.DuracionMinutos} min)" : "")</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Acciones del turno -->
+                        <div class="turno-acciones">
+                            @if (string.Equals(turno.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <button type="button"
+                                        class="btn-accion btn-accion-realizado"
+                                        disabled="@(turno.FechaHora > DateTime.Now)"
+                                        title="@(turno.FechaHora > DateTime.Now ? "Solo se puede marcar como realizado una vez transcurrida la hora del turno" : "Marcar como realizado")"
+                                        @onclick="() => MarcarComoRealizado(turno)">
+                                    <span class="material-symbols-outlined">check_circle</span>
+                                    <span>Marcar realizado</span>
+                                </button>
+
+                                <button type="button"
+                                        class="btn-accion btn-accion-reprogramar"
+                                        @onclick="() => MostrarReprogramacion(turno)">
+                                    <span class="material-symbols-outlined">edit_calendar</span>
+                                    <span>Reprogramar</span>
+                                </button>
+
+                                <button type="button"
+                                        class="btn-accion btn-accion-cancelar"
+                                        @onclick="() => MostrarConfirmacion(turno.Id)">
+                                    <span class="material-symbols-outlined">cancel</span>
+                                    <span>Cancelar</span>
+                                </button>
+                            }
+                            else if (esRealizado)
+                            {
+                                <span class="detalle-sub">
+                                    <span class="material-symbols-outlined" style="font-size: 15px; vertical-align: -2px; color: #116827;">verified</span>
+                                    Atención completada con éxito
+                                </span>
+                            }
+                        </div>
+
+                        <!-- Despliegue de reprogramación integrado en la tarjeta -->
+                        @if (idTurnoReprogramar == turno.Id)
+                        {
+                            <div class="turno-reprogramar-box">
+                                <h4 class="reprogramar-titulo">
+                                    <span class="material-symbols-outlined">schedule_send</span>
+                                    <span>Reprogramar Turno #@turno.Id</span>
+                                </h4>
+
+                                <div class="reprogramar-grid">
+                                    <div class="reprogramar-campo">
+                                        <label class="reprogramar-label">Nueva fecha</label>
+                                        <input type="date"
+                                               class="reprogramar-input"
+                                               min="@fechaMinima"
+                                               @bind="fechaReprogramacion"
+                                               @bind:format="yyyy-MM-dd" />
+                                    </div>
+
+                                    <div class="reprogramar-campo">
+                                        <label class="reprogramar-label">Nuevo horario</label>
+                                        @if (FechaReprogramacionValida)
+                                        {
+                                            <select class="reprogramar-select"
+                                                    @bind="horaReprogramacion">
+                                                <option value="">Seleccioná un horario</option>
+                                                @foreach (var horario in horariosDisponiblesReprogramacion)
+                                                {
+                                                    <option value="@horario">@horario hs</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <select class="reprogramar-select" disabled>
+                                                <option>Fecha no válida</option>
+                                            </select>
+                                        }
+                                    </div>
+                                </div>
+
+                                @if (!FechaReprogramacionValida)
+                                {
+                                    <p class="reprogramar-aviso-error">
+                                        <span class="material-symbols-outlined">warning</span>
+                                        <span>Seleccioná una fecha de lunes a sábado (domingos cerrado).</span>
+                                    </p>
+                                }
+                                else if (horariosDisponiblesReprogramacion.Count == 0)
+                                {
+                                    <p class="reprogramar-aviso-error">
+                                        <span class="material-symbols-outlined">event_busy</span>
+                                        <span>No hay horarios libres para esta fecha. Elegí otro día.</span>
+                                    </p>
+                                }
+
+                                <div class="reprogramar-acciones">
+                                    <button type="button"
+                                            class="btn-guardar-reprog"
+                                            disabled="@(guardandoReprogramacion || !FechaReprogramacionValida || string.IsNullOrWhiteSpace(horaReprogramacion))"
+                                            @onclick="ConfirmarReprogramacion">
+                                        @(guardandoReprogramacion ? "Guardando..." : "Guardar cambios")
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn-cerrar-reprog"
+                                            @onclick="CerrarReprogramacion">
+                                        Volver
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
+                    </article>
+                }
+            </div>
+        }
+    }
+
+</div>
+
+<Confirmacion @ref="confirmacion"
+              Titulo="Confirmar cancelación"
+              onCancel="Cancelar"
+              onConfirm="ConfirmarCancelacion"
+              textCancelar="No"
+              textOk="Sí">
+
+    <p>Estás por cancelar un turno.</p>
+    <p>¿Estás seguro?</p>
+
+</Confirmacion>
+
+@code {
+
+    private readonly CultureInfo culturaArgentina =
+        CultureInfo.GetCultureInfo("es-AR");
+
+    private List<TurnoDTO> turnos = new();
+    private List<ClienteDTO> clientes = new();
+    private List<ServicioDTO> servicios = new();
+
+    private bool cargando = true;
+    private string error = "";
+
+    private Confirmacion? confirmacion;
+    private int idTurnoSeleccionado = 0;
+
+    private string mensajeAccion = "";
+    private bool accionCorrecta = false;
+
+    private int idTurnoReprogramar = 0;
+
+    private DateTime fechaReprogramacion = DateTime.Today;
+    private string horaReprogramacion = "";
+
+    private bool guardandoReprogramacion = false;
+
+    // Filtros reactivos en memoria
+    private string filtroBusqueda = "";
+    private string filtroEstado = "";
+
+    private string fechaMinima =>
+        DateTime.Today.ToString("yyyy-MM-dd");
+
+    private List<TurnoDTO> turnosVisibles =>
+        turnos.Where(t =>
+            !string.Equals(
+                t.Estado,
+                "Cancelado",
+                StringComparison.OrdinalIgnoreCase))
+        .OrderBy(t => t.FechaHora)
+        .ToList();
+
+    // Métricas calculadas con datos 100% reales
+    private int TurnosHoyCount =>
+        turnosVisibles.Count(t => t.FechaHora.Date == DateTime.Today);
+
+    private int TurnosPendientesCount =>
+        turnosVisibles.Count(t => string.Equals(t.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase));
+
+    private int TurnosRealizadosCount =>
+        turnosVisibles.Count(t => string.Equals(t.Estado, "Realizado", StringComparison.OrdinalIgnoreCase));
+
+    private int TurnosConfirmadosCount =>
+        turnosVisibles.Count(t => string.Equals(t.Estado, "Confirmado", StringComparison.OrdinalIgnoreCase));
+
+    // Lista filtrada reactivamente por búsqueda y píldoras de estado
+    private List<TurnoDTO> turnosFiltrados
+    {
+        get
+        {
+            var resultado = turnosVisibles.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(filtroEstado))
+            {
+                resultado = resultado.Where(t =>
+                    string.Equals(t.Estado, filtroEstado, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtroBusqueda))
+            {
+                var busqueda = filtroBusqueda.Trim().ToLowerInvariant();
+
+                resultado = resultado.Where(t =>
+                {
+                    if (t.Id.ToString().Contains(busqueda))
+                        return true;
+
+                    var cliente = clientes.FirstOrDefault(c => c.Id == t.ClienteId);
+                    if (cliente != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(cliente.Nombre) &&
+                            cliente.Nombre.ToLowerInvariant().Contains(busqueda))
+                            return true;
+
+                        if (!string.IsNullOrWhiteSpace(cliente.Apellido) &&
+                            cliente.Apellido.ToLowerInvariant().Contains(busqueda))
+                            return true;
+
+                        if (!string.IsNullOrWhiteSpace(cliente.Telefono) &&
+                            cliente.Telefono.ToLowerInvariant().Contains(busqueda))
+                            return true;
+
+                        if (!string.IsNullOrWhiteSpace(cliente.Email) &&
+                            cliente.Email.ToLowerInvariant().Contains(busqueda))
+                            return true;
+                    }
+
+                    var servicio = servicios.FirstOrDefault(s => s.Id == t.ServicioId);
+                    if (servicio != null &&
+                        !string.IsNullOrWhiteSpace(servicio.Nombre) &&
+                        servicio.Nombre.ToLowerInvariant().Contains(busqueda))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                });
+            }
+
+            return resultado.ToList();
+        }
+    }
+
+    private void SetFiltroEstado(string estado)
+    {
+        filtroEstado = estado;
+    }
+
+    private string ObtenerIniciales(ClienteDTO? cliente)
+    {
+        if (cliente == null)
+            return "BW";
+
+        var n = !string.IsNullOrWhiteSpace(cliente.Nombre) ? cliente.Nombre.Trim().Substring(0, 1).ToUpper() : "";
+        var a = !string.IsNullOrWhiteSpace(cliente.Apellido) ? cliente.Apellido.Trim().Substring(0, 1).ToUpper() : "";
+
+        var res = $"{n}{a}";
+        return string.IsNullOrEmpty(res) ? "BW" : res;
+    }
+
+    private string ObtenerClaseEstadoBadge(string? estado)
+    {
+        if (string.Equals(estado, "Pendiente", StringComparison.OrdinalIgnoreCase))
+            return "estado-pendiente";
+
+        if (string.Equals(estado, "Realizado", StringComparison.OrdinalIgnoreCase))
+            return "estado-realizado";
+
+        if (string.Equals(estado, "Confirmado", StringComparison.OrdinalIgnoreCase))
+            return "estado-confirmado";
+
+        return "estado-otro";
+    }
+
+    private bool FechaReprogramacionValida =>
+        fechaReprogramacion.Date >= DateTime.Today &&
+        fechaReprogramacion.DayOfWeek != DayOfWeek.Sunday;
+
+    private List<string> horariosDisponiblesReprogramacion
+    {
+        get
+        {
+            var horarios = new List<string>();
+
+            var turnoActual = turnos.FirstOrDefault(
+                t => t.Id == idTurnoReprogramar);
+
+            if (turnoActual == null || !FechaReprogramacionValida)
+                return horarios;
+
+            var servicioActual = servicios.FirstOrDefault(
+                s => s.Id == turnoActual.ServicioId);
+
+            if (servicioActual == null ||
+                servicioActual.DuracionMinutos <= 0)
+                return horarios;
+
+            int duracion = servicioActual.DuracionMinutos;
+
+            var hora = new TimeSpan(10, 0, 0);
+            var cierre = new TimeSpan(21, 0, 0);
+
+            while (hora.Add(TimeSpan.FromMinutes(duracion)) <= cierre)
+            {
+                var inicioNuevo = fechaReprogramacion.Date + hora;
+                var finNuevo = inicioNuevo.AddMinutes(duracion);
+
+                bool ocupado = turnos.Any(t =>
+                {
+                    if (t.Id == idTurnoReprogramar)
+                        return false;
+
+                    if (string.Equals(
+                        t.Estado,
+                        "Cancelado",
+                        StringComparison.OrdinalIgnoreCase))
+                        return false;
+
+                    if (t.FechaHora.Date != fechaReprogramacion.Date)
+                        return false;
+
+                    var servicioExistente = servicios.FirstOrDefault(
+                        s => s.Id == t.ServicioId);
+
+                    if (servicioExistente == null ||
+                        servicioExistente.DuracionMinutos <= 0)
+                        return false;
+
+                    var inicioExistente = t.FechaHora;
+                    var finExistente = inicioExistente.AddMinutes(
+                        servicioExistente.DuracionMinutos);
+
+                    return inicioNuevo < finExistente &&
+                           finNuevo > inicioExistente;
+                });
+
+                if (!ocupado &&
+                    (fechaReprogramacion.Date > DateTime.Today ||
+                     inicioNuevo > DateTime.Now))
+                {
+                    horarios.Add(hora.ToString(@"hh\:mm"));
+                }
+
+                hora = hora.Add(TimeSpan.FromMinutes(duracion));
+            }
+
+            return horarios;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var respuestaTurnos =
+                await http.GetAsync<List<TurnoDTO>>("api/turno");
+
+            if (respuestaTurnos.Error)
+            {
+                error = respuestaTurnos.Mensaje ??
+                        "No se pudieron cargar los turnos.";
+                return;
+            }
+
+            turnos = respuestaTurnos.Respuesta ??
+                     new List<TurnoDTO>();
+
+            var respuestaClientes =
+                await http.GetAsync<List<ClienteDTO>>("api/cliente");
+
+            if (respuestaClientes.Error)
+            {
+                error = respuestaClientes.Mensaje ??
+                        "No se pudieron cargar los clientes.";
+                return;
+            }
+
+            clientes = respuestaClientes.Respuesta ??
+                       new List<ClienteDTO>();
+
+            var respuestaServicios =
+                await http.GetAsync<List<ServicioDTO>>("api/servicio");
+
+            if (respuestaServicios.Error)
+            {
+                error = respuestaServicios.Mensaje ??
+                        "No se pudieron cargar los servicios.";
+                return;
+            }
+
+            servicios = respuestaServicios.Respuesta ??
+                        new List<ServicioDTO>();
+        }
+        catch (Exception ex)
+        {
+            error = $"No se pudieron cargar los turnos: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private string ObtenerClaseEstado(string? estado)
+    {
+        if (string.Equals(
+            estado,
+            "Confirmado",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            return "badge bg-success";
+        }
+
+        if (string.Equals(
+            estado,
+            "Cancelado",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            return "badge bg-danger";
+        }
+
+        if (string.Equals(
+            estado,
+            "Realizado",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            return "badge bg-primary";
+        }
+
+        return "badge bg-warning text-dark";
+    }
+
+    private async Task MarcarComoRealizado(TurnoDTO turno)
+    {
+        mensajeAccion = "";
+
+        if (!string.Equals(
+            turno.Estado,
+            "Pendiente",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            mensajeAccion =
+                "Solamente se pueden marcar como realizados los turnos pendientes.";
+            accionCorrecta = false;
+            return;
+        }
+
+        if (turno.FechaHora > DateTime.Now)
+        {
+            mensajeAccion =
+                "No se puede marcar como realizado un turno futuro.";
+            accionCorrecta = false;
+            return;
+        }
+
+        try
+        {
+            var dto = new TurnoDTO
+            {
+                Id = turno.Id,
+                FechaHora = turno.FechaHora,
+                Estado = "Realizado",
+                ClienteId = turno.ClienteId,
+                ServicioId = turno.ServicioId
+            };
+
+            var respuesta = await http.PutAsync<TurnoDTO, bool>(
+                $"api/turno/{turno.Id}", dto);
+
+            if (respuesta.Error || respuesta.Respuesta != true)
+            {
+                mensajeAccion = respuesta.Mensaje ??
+                    "No se pudo marcar el turno como realizado.";
+                accionCorrecta = false;
+                return;
+            }
+
+            turno.Estado = "Realizado";
+            mensajeAccion =
+                $"El turno #{turno.Id} se marcó como realizado correctamente.";
+            accionCorrecta = true;
+        }
+        catch (Exception ex)
+        {
+            mensajeAccion = $"Error al actualizar el turno: {ex.Message}";
+            accionCorrecta = false;
+        }
+    }
+
+    private void MostrarReprogramacion(TurnoDTO turno)
+    {
+        idTurnoReprogramar = turno.Id;
+        fechaReprogramacion = turno.FechaHora.Date;
+        horaReprogramacion = "";
+
+        mensajeAccion = "";
+    }
+
+    private void CerrarReprogramacion()
+    {
+        idTurnoReprogramar = 0;
+        horaReprogramacion = "";
+    }
+
+    private async Task ConfirmarReprogramacion()
+    {
+        mensajeAccion = "";
+
+        var turno = turnos.FirstOrDefault(
+            t => t.Id == idTurnoReprogramar);
+
+        if (turno == null)
+        {
+            mensajeAccion = "No se encontró el turno seleccionado.";
+            accionCorrecta = false;
+            return;
+        }
+
+        if (!FechaReprogramacionValida)
+        {
+            mensajeAccion = "Seleccioná una fecha válida.";
+            accionCorrecta = false;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(horaReprogramacion) ||
+            !horariosDisponiblesReprogramacion.Contains(horaReprogramacion))
+        {
+            mensajeAccion = "Seleccioná un horario disponible.";
+            accionCorrecta = false;
+            return;
+        }
+
+        guardandoReprogramacion = true;
+
+        try
+        {
+            var respuestaTurnos =
+                await http.GetAsync<List<TurnoDTO>>("api/turno");
+
+            if (respuestaTurnos.Error)
+            {
+                mensajeAccion = respuestaTurnos.Mensaje ??
+                    "No se pudieron consultar los turnos.";
+
+                accionCorrecta = false;
+                return;
+            }
+
+            turnos = respuestaTurnos.Respuesta ??
+                     new List<TurnoDTO>();
+
+            turno = turnos.FirstOrDefault(
+                t => t.Id == idTurnoReprogramar);
+
+            if (turno == null)
+            {
+                mensajeAccion = "El turno ya no existe.";
+                accionCorrecta = false;
+                return;
+            }
+
+            if (!horariosDisponiblesReprogramacion.Contains(
+                horaReprogramacion))
+            {
+                mensajeAccion =
+                    "Ese horario ya no está disponible. Elegí otro.";
+
+                accionCorrecta = false;
+                return;
+            }
+
+            var hora = TimeSpan.ParseExact(
+                horaReprogramacion,
+                @"hh\:mm",
+                CultureInfo.InvariantCulture);
+
+            var nuevaFechaHora = fechaReprogramacion.Date.Add(hora);
+
+            var dto = new TurnoDTO
+            {
+                Id = turno.Id,
+                FechaHora = nuevaFechaHora,
+                Estado = turno.Estado,
+                ClienteId = turno.ClienteId,
+                ServicioId = turno.ServicioId
+            };
+
+            var respuesta = await http.PutAsync<TurnoDTO, bool>(
+                $"api/turno/{turno.Id}",
+                dto);
+
+            if (respuesta.Error)
+            {
+                mensajeAccion = respuesta.Mensaje ??
+                    "No se pudo reprogramar el turno.";
+
+                accionCorrecta = false;
+                return;
+            }
+
+            if (respuesta.Respuesta != true)
+            {
+                mensajeAccion =
+                    "El servidor no confirmó la reprogramación.";
+
+                accionCorrecta = false;
+                return;
+            }
+
+            turno.FechaHora = nuevaFechaHora;
+
+            mensajeAccion =
+                $"El turno #{turno.Id} se reprogramó correctamente.";
+
+            accionCorrecta = true;
+
+            CerrarReprogramacion();
+        }
+        catch (Exception ex)
+        {
+            mensajeAccion =
+                $"Error al reprogramar el turno: {ex.Message}";
+
+            accionCorrecta = false;
+        }
+        finally
+        {
+            guardandoReprogramacion = false;
+        }
+    }
+
+    private void MostrarConfirmacion(int id)
+    {
+        idTurnoSeleccionado = id;
+        mensajeAccion = "";
+
+        confirmacion?.Ver();
+    }
+
+    private void Cancelar()
+    {
+        confirmacion?.Ocultar();
+        idTurnoSeleccionado = 0;
+    }
+
+    private async Task ConfirmarCancelacion()
+    {
+        var turno = turnos.FirstOrDefault(
+            t => t.Id == idTurnoSeleccionado);
+
+        if (turno == null)
+        {
+            mensajeAccion = "No se encontró el turno seleccionado.";
+            accionCorrecta = false;
+
+            confirmacion?.Ocultar();
+            idTurnoSeleccionado = 0;
+            return;
+        }
+
+        try
+        {
+            var dto = new TurnoDTO
+            {
+                Id = turno.Id,
+                FechaHora = turno.FechaHora,
+                Estado = "Cancelado",
+                ClienteId = turno.ClienteId,
+                ServicioId = turno.ServicioId
+            };
+
+            var respuesta = await http.PutAsync<TurnoDTO, bool>(
+                $"api/turno/{turno.Id}",
+                dto);
+
+            if (respuesta.Error)
+            {
+                mensajeAccion = respuesta.Mensaje ??
+                    "No se pudo cancelar el turno.";
+
+                accionCorrecta = false;
+            }
+            else if (respuesta.Respuesta != true)
+            {
+                mensajeAccion =
+                    "El servidor no confirmó la cancelación.";
+
+                accionCorrecta = false;
+            }
+            else
+            {
+                turno.Estado = "Cancelado";
+                turnos.Remove(turno);
+
+                mensajeAccion =
+                    "El turno se canceló correctamente.";
+
+                accionCorrecta = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeAccion =
+                $"Error al cancelar el turno: {ex.Message}";
+
+            accionCorrecta = false;
+        }
+        finally
+        {
+            confirmacion?.Ocultar();
+            idTurnoSeleccionado = 0;
+        }
+    }
+}

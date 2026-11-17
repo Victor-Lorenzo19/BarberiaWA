@@ -1,0 +1,487 @@
+﻿@page "/historial-clientes"
+
+@using BarberiaWA.Shared.DTO
+@using BarberiaWA.Servicio.ServicioHTTP
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Globalization
+
+@inject IHttpService http
+
+<PageTitle>Historial de clientes - BarberiaWA</PageTitle>
+
+<div class="hc-container">
+
+    <!-- ENCABEZADO -->
+    <header class="hc-header">
+        <div class="hc-header-info">
+            <div class="hc-header-icon-wrap">
+                <span class="material-symbols-outlined">badge</span>
+            </div>
+            <div>
+                <div class="hc-breadcrumb">
+                    <span class="material-symbols-outlined hc-bread-icon">storefront</span>
+                    <span>Gestión del Salón</span>
+                    <span class="material-symbols-outlined hc-bread-sep">chevron_right</span>
+                    <span>Historial de Clientes</span>
+                </div>
+                <h1 class="hc-title">Ficha Maestro &amp; Fidelización</h1>
+                <p class="hc-subtitle">Consultá los servicios realizados por cada cliente registrado en el sistema.</p>
+            </div>
+        </div>
+        <span class="hc-staff-badge">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            Área Operativa
+        </span>
+    </header>
+
+    <!-- MENSAJE DE ERROR O INFO -->
+    @if (!string.IsNullOrEmpty(mensaje))
+    {
+        <div class="hc-mensaje @(error ? "hc-mensaje-error" : "hc-mensaje-info")">
+            <span class="material-symbols-outlined">@(error ? "error" : "info")</span>
+            <span>@mensaje</span>
+        </div>
+    }
+
+    <div class="hc-workspace">
+
+        <!-- PANEL IZQUIERDO: DIRECTORIO DE CLIENTES -->
+        <aside class="hc-directory">
+            <div class="hc-panel hc-directory-panel">
+                <div class="hc-panel-header">
+                    <div class="hc-panel-title-row">
+                        <span class="material-symbols-outlined hc-panel-icon">group</span>
+                        <div>
+                            <h2 class="hc-panel-title">Directorio de clientes</h2>
+                            <p class="hc-panel-subtitle">Elegí un cliente para consultar su ficha.</p>
+                        </div>
+                    </div>
+                    @if (!cargandoClientes && clientes.Count > 0)
+                    {
+                        <span class="hc-count-pill">@clientes.Count</span>
+                    }
+                </div>
+
+                <div class="hc-panel-body">
+                    @if (cargandoClientes)
+                    {
+                        <div class="hc-cargando">
+                            <span class="material-symbols-outlined hc-spin">progress_activity</span>
+                            <span>Cargando clientes...</span>
+                        </div>
+                    }
+                    else if (clientes.Count == 0)
+                    {
+                        <div class="hc-vacio">
+                            <span class="material-symbols-outlined hc-vacio-icon">group_off</span>
+                            <h4>Sin clientes registrados</h4>
+                            <p>Todavía no hay clientes en el sistema.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Selección conservada (evento ClienteSeleccionado) -->
+                        <div class="hc-select-wrap">
+                            <span class="material-symbols-outlined hc-select-icon">person</span>
+                            <select class="hc-select"
+                                    value="@clienteSeleccionadoId"
+                                    @onchange="ClienteSeleccionado">
+                                <option value="0">Seleccioná un cliente...</option>
+                                @foreach (var cliente in clientes)
+                                {
+                                    <option value="@cliente.Id">
+                                        @cliente.Nombre @cliente.Apellido
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="hc-directory-divider">
+                            <span>Padrón general</span>
+                        </div>
+
+                        <div class="hc-client-list">
+                            @foreach (var cliente in clientes)
+                            {
+                                <button type="button"
+                                        class="hc-client-item @(cliente.Id == clienteSeleccionadoId ? "hc-client-item-active" : "")"
+                                        @onclick="() => SeleccionarCliente(cliente.Id)">
+                                    <span class="hc-client-avatar">@ObtenerIniciales(cliente)</span>
+                                    <span class="hc-client-info">
+                                        <span class="hc-client-name">@cliente.Nombre @cliente.Apellido</span>
+                                        @if (!string.IsNullOrWhiteSpace(cliente.Telefono))
+                                        {
+                                            <span class="hc-client-contact">
+                                                <span class="material-symbols-outlined">call</span>
+                                                <span>@cliente.Telefono</span>
+                                            </span>
+                                        }
+                                        else if (!string.IsNullOrWhiteSpace(cliente.Email))
+                                        {
+                                            <span class="hc-client-contact">
+                                                <span class="material-symbols-outlined">mail</span>
+                                                <span>@cliente.Email</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="hc-client-contact hc-client-contact-muted">Sin datos de contacto</span>
+                                        }
+                                    </span>
+                                    <span class="material-symbols-outlined hc-client-chev">chevron_right</span>
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </aside>
+
+        <!-- PANEL DERECHO: FICHA Y CRONOLOGÍA -->
+        <section class="hc-dossier">
+            @if (cargandoHistorial)
+            {
+                <div class="hc-panel">
+                    <div class="hc-panel-body">
+                        <div class="hc-cargando">
+                            <span class="material-symbols-outlined hc-spin">progress_activity</span>
+                            <span>Cargando historial del cliente...</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (clienteSeleccionadoId > 0 && !error)
+            {
+                var clienteActivo = clientes.FirstOrDefault(c => c.Id == clienteSeleccionadoId);
+                var visitas = historial.OrderByDescending(t => t.FechaHora).ToList();
+
+                <div class="hc-hero-card">
+                    <div class="hc-hero-watermark material-symbols-outlined">content_cut</div>
+                    <div class="hc-hero-main">
+                        <div class="hc-hero-avatar">@ObtenerIniciales(clienteActivo)</div>
+                        <div class="hc-hero-info">
+                            <span class="hc-hero-eyebrow">Ficha de cliente</span>
+                            <h2 class="hc-hero-name">
+                                @if (clienteActivo != null)
+                                {
+                                    <span>@clienteActivo.Nombre @clienteActivo.Apellido</span>
+                                }
+                                else
+                                {
+                                    <span>Cliente no disponible</span>
+                                }
+                            </h2>
+                            <div class="hc-hero-meta">
+                                <span class="hc-hero-id">Ficha #@clienteSeleccionadoId</span>
+                                @if (clienteActivo != null && !string.IsNullOrWhiteSpace(clienteActivo.Telefono))
+                                {
+                                    <span class="hc-hero-meta-item">
+                                        <span class="material-symbols-outlined">phone_iphone</span>
+                                        <span>@clienteActivo.Telefono</span>
+                                    </span>
+                                }
+                                @if (clienteActivo != null && !string.IsNullOrWhiteSpace(clienteActivo.Email))
+                                {
+                                    <span class="hc-hero-meta-item">
+                                        <span class="material-symbols-outlined">mail</span>
+                                        <span>@clienteActivo.Email</span>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hc-kpi-grid">
+                    <div class="hc-kpi-card">
+                        <div class="hc-kpi-top">
+                            <span class="hc-kpi-label">Visitas registradas</span>
+                            <span class="material-symbols-outlined hc-kpi-icon">calendar_month</span>
+                        </div>
+                        <span class="hc-kpi-value">@visitas.Count</span>
+                        <span class="hc-kpi-note">@(visitas.Count == 1 ? "Servicio realizado" : "Servicios realizados")</span>
+                    </div>
+
+                    <div class="hc-kpi-card">
+                        <div class="hc-kpi-top">
+                            <span class="hc-kpi-label">Última visita</span>
+                            <span class="material-symbols-outlined hc-kpi-icon">event_available</span>
+                        </div>
+                        <span class="hc-kpi-value hc-kpi-value-text">
+                            @(visitas.Count > 0 ? visitas.First().FechaHora.ToString("dd/MM/yyyy", culturaArgentina) : "—")
+                        </span>
+                        <span class="hc-kpi-note">
+                            @(visitas.Count > 0 ? visitas.First().FechaHora.ToString("HH:mm", culturaArgentina) + " hs" : "Sin visitas registradas")
+                        </span>
+                    </div>
+
+                    <div class="hc-kpi-card">
+                        <div class="hc-kpi-top">
+                            <span class="hc-kpi-label">Gasto registrado</span>
+                            <span class="material-symbols-outlined hc-kpi-icon">payments</span>
+                        </div>
+                        <span class="hc-kpi-value hc-kpi-value-text">@FormatearPrecio(TotalHistorial)</span>
+                        <span class="hc-kpi-note">Según tarifas del catálogo</span>
+                    </div>
+                </div>
+
+                <div class="hc-panel hc-timeline-panel">
+                    <div class="hc-panel-header">
+                        <div class="hc-panel-title-row">
+                            <span class="material-symbols-outlined hc-panel-icon">history</span>
+                            <div>
+                                <h2 class="hc-panel-title">Historial cronológico de visitas</h2>
+                                <p class="hc-panel-subtitle">
+                                    @if (visitas.Count > 0)
+                                    {
+                                        <span>@visitas.Count servicio@(visitas.Count != 1 ? "s" : "") encontrado@(visitas.Count != 1 ? "s" : "") en el historial.</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Sin visitas registradas para este cliente.</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        @if (visitas.Count > 0)
+                        {
+                            <span class="hc-metric-pill">
+                                <span class="hc-metric-num">@visitas.Count</span>
+                                <span class="hc-metric-label">visita@(visitas.Count != 1 ? "s" : "")</span>
+                            </span>
+                        }
+                    </div>
+
+                    <div class="hc-panel-body">
+                        @if (visitas.Count == 0)
+                        {
+                            <div class="hc-vacio">
+                                <span class="material-symbols-outlined hc-vacio-icon">event_busy</span>
+                                <h4>Sin servicios realizados</h4>
+                                <p>Este cliente todavía no tiene servicios registrados como realizados.</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="hc-timeline">
+                                @for (int i = 0; i < visitas.Count; i++)
+                                {
+                                    var turno = visitas[i];
+                                    var servicio = ServicioDelTurno(turno);
+                                    var esUltima = i == 0;
+
+                                    <article class="hc-timeline-card @(esUltima ? "hc-timeline-latest" : "")">
+                                        <div class="hc-timeline-stripe"></div>
+
+                                        <div class="hc-timeline-row">
+                                            <div class="hc-timeline-main">
+                                                <div class="hc-visit-tags">
+                                                    <span class="hc-visit-date">
+                                                        <span class="material-symbols-outlined">calendar_month</span>
+                                                        @FormatearFecha(turno.FechaHora) • @FormatearHora(turno.FechaHora) hs
+                                                    </span>
+                                                    @if (esUltima)
+                                                    {
+                                                        <span class="hc-visit-badge">Última visita</span>
+                                                    }
+                                                </div>
+                                                <h3 class="hc-visit-service">
+                                                    <span class="material-symbols-outlined">content_cut</span>
+                                                    @(servicio?.Nombre ?? "Servicio no encontrado")
+                                                </h3>
+                                            </div>
+                                            <div class="hc-visit-price">@FormatearPrecio(servicio?.Precio)</div>
+                                        </div>
+
+                                        <div class="hc-timeline-meta">
+                                            <span class="hc-meta-item">
+                                                <span class="material-symbols-outlined">schedule</span>
+                                                <span>Duración: @ObtenerDuracion(servicio)</span>
+                                            </span>
+                                            <span class="hc-meta-item">
+                                                <span class="material-symbols-outlined">confirmation_number</span>
+                                                <span>Turno #@turno.Id</span>
+                                            </span>
+                                            <span class="hc-meta-item">
+                                                <span class="material-symbols-outlined">verified</span>
+                                                <span>@turno.Estado</span>
+                                            </span>
+                                        </div>
+                                    </article>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="hc-panel hc-sin-seleccion">
+                    <div class="hc-panel-body">
+                        <div class="hc-vacio">
+                            <span class="material-symbols-outlined hc-vacio-icon">person_search</span>
+                            <h4>Seleccioná un cliente</h4>
+                            <p>Elegí un cliente del directorio para ver su historial de visitas.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@code {
+
+    private List<ClienteDTO> clientes = new();
+    private List<TurnoDTO> historial = new();
+    private List<ServicioDTO> servicios = new();
+
+    private int clienteSeleccionadoId = 0;
+
+    private bool cargandoClientes = true;
+    private bool cargandoHistorial = false;
+    private bool error = false;
+
+    private string mensaje = "";
+
+    private readonly CultureInfo culturaArgentina =
+        CultureInfo.GetCultureInfo("es-AR");
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var respuestaClientes =
+                await http.GetAsync<List<ClienteDTO>>("api/cliente");
+
+            if (respuestaClientes.Error)
+            {
+                error = true;
+                mensaje = respuestaClientes.Mensaje ??
+                    "No se pudieron cargar los clientes.";
+                return;
+            }
+
+            clientes = respuestaClientes.Respuesta ??
+                new List<ClienteDTO>();
+
+            var respuestaServicios =
+                await http.GetAsync<List<ServicioDTO>>("api/servicio");
+
+            if (respuestaServicios.Error)
+            {
+                error = true;
+                mensaje = respuestaServicios.Mensaje ??
+                    "No se pudieron cargar los servicios.";
+                return;
+            }
+
+            servicios = respuestaServicios.Respuesta ??
+                new List<ServicioDTO>();
+        }
+        catch (Exception ex)
+        {
+            error = true;
+            mensaje = $"Error al cargar los datos: {ex.Message}";
+        }
+        finally
+        {
+            cargandoClientes = false;
+        }
+    }
+
+    private async Task ClienteSeleccionado(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out int id))
+        {
+            return;
+        }
+
+        clienteSeleccionadoId = id;
+
+        historial.Clear();
+        mensaje = "";
+        error = false;
+
+        if (id == 0)
+        {
+            return;
+        }
+
+        cargandoHistorial = true;
+
+        try
+        {
+            var respuesta =
+                await http.GetAsync<List<TurnoDTO>>(
+                    $"api/cliente/{id}/historial");
+
+            if (respuesta.Error)
+            {
+                error = true;
+                mensaje = respuesta.Mensaje ??
+                    "No se pudo consultar el historial del cliente.";
+                return;
+            }
+
+            historial = respuesta.Respuesta ??
+                new List<TurnoDTO>();
+        }
+        catch (Exception ex)
+        {
+            error = true;
+            mensaje = $"Error al consultar el historial: {ex.Message}";
+        }
+        finally
+        {
+            cargandoHistorial = false;
+        }
+    }
+
+    // Reutiliza el evento existente para la selección desde el directorio visual.
+    private async Task SeleccionarCliente(int id)
+    {
+        await ClienteSeleccionado(new ChangeEventArgs { Value = id.ToString() });
+    }
+
+    // Los datos mostrados siempre provienen de la API; nada se inventa en pantalla.
+    private ServicioDTO? ServicioDelTurno(TurnoDTO turno) =>
+        servicios.FirstOrDefault(s => s.Id == turno.ServicioId);
+
+    private decimal TotalHistorial =>
+        historial.Sum(t => ServicioDelTurno(t)?.Precio ?? 0m);
+
+    private string ObtenerIniciales(ClienteDTO? cliente)
+    {
+        if (cliente == null)
+            return "BW";
+
+        var n = !string.IsNullOrWhiteSpace(cliente.Nombre)
+            ? cliente.Nombre.Trim().Substring(0, 1).ToUpper()
+            : "";
+        var a = !string.IsNullOrWhiteSpace(cliente.Apellido)
+            ? cliente.Apellido.Trim().Substring(0, 1).ToUpper()
+            : "";
+
+        var res = $"{n}{a}";
+        return string.IsNullOrEmpty(res) ? "BW" : res;
+    }
+
+    private string FormatearFecha(DateTime fecha) =>
+        fecha.ToString("dd 'de' MMMM 'de' yyyy", culturaArgentina);
+
+    private string FormatearHora(DateTime fecha) =>
+        fecha.ToString("HH:mm", culturaArgentina);
+
+    private string FormatearPrecio(decimal? precio) =>
+        precio is null
+            ? "—"
+            : $"${precio.Value.ToString("N0", culturaArgentina)}";
+
+    private string ObtenerDuracion(ServicioDTO? servicio) =>
+        servicio is null || servicio.DuracionMinutos <= 0
+            ? "—"
+            : $"{servicio.DuracionMinutos} min";
+}

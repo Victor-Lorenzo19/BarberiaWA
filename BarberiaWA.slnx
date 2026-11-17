@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="BarberiaWA.BD/BarberiaWA.BD.csproj" Id="5eef4bed-ed9c-4611-9889-73363115e1fc" />
+  <Project Path="BarberiaWA.Cliente/BarberiaWA.Cliente.csproj" />
+  <Project Path="BarberiaWA.Repositorio/BarberiaWA.Repositorio.csproj" Id="f0befee6-cf2a-4fc5-9569-da1856654ff2" />
+  <Project Path="BarberiaWA.server/BarberiaWA.server.csproj" />
+  <Project Path="BarberiaWA.Servicio/BarberiaWA.Servicio.csproj" Id="9c24db74-7dfa-4436-9320-d656480fa1a8" />
+  <Project Path="BarberiaWA.Shared/BarberiaWA.Shared.csproj" Id="0e6cd008-b941-4150-bf1a-3f2ceea081e2" />
+</Solution>
